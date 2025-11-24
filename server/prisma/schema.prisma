@@ -5,11 +5,47 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  
+  provider = "prisma-client-js" 
 }
 
 datasource db {
   provider = "mongodb"
-  url = env("DATABASE_URL")
+}
+
+model Shipment{
+ id           String   @id @default(auto()) @map("_id") @db.ObjectId
+ orderNumber  String
+ autherId     String
+ truckId      String?
+ truckNumber  String?
+ clientName   String
+ loadingAddress String
+ deliveryAddress String
+ loadingDay String
+ deliveryDay String
+ actualLoadingDay String?
+ actualDeliveryDay String?
+ deliveryTime String?
+ phone String
+ gpsCoordinates String?
+ recipient String?
+ createdAt     DateTime  @default(now())
+ updatedAt     DateTime?
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId   String    @unique
+  email     String    @unique
+  name      String?
+  shipments String[]  @default([])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
+model Truck{
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  plateNumber      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 }
