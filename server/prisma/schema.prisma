@@ -29,8 +29,15 @@ model Shipment{
  phone String
  gpsCoordinates String?
  recipient String?
+ status       Status @default(pending)
  createdAt     DateTime  @default(now())
  updatedAt     DateTime?
+}
+
+enum Status {
+  pending
+  inTransit
+  delivered
 }
 
 model User {
