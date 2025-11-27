@@ -6,6 +6,13 @@ import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trp
 export const shipmentsRouter = router({
   // Get all shipments
   getAllShipments: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.userId;
+    if (!userId) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User not authenticated',
+      });
+    };
     try {
       const shipments = await ctx.db.shipment.findMany();
       if (shipments.length === 0) {
@@ -13,7 +20,7 @@ export const shipmentsRouter = router({
           code: 'NOT_FOUND',
           message: 'No shipments found',
         });
-      }
+      };
       return shipments;
     } catch (e: unknown) {
       throw new TRPCError({
@@ -25,6 +32,13 @@ export const shipmentsRouter = router({
   getShipmentById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated',
+        });
+      };
       const id = input.id;
       try {
         const shipment = await ctx.db.shipment.findUnique({
@@ -41,12 +55,19 @@ export const shipmentsRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch shipment',
-        })
-      }
+        });
+      };
     }),
   createNewShipment: publicProcedure
     .input(createNewShipmentInput)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated',
+        });
+      };
       try {
         const newCreatedShipment = await ctx.db.shipment.create({
           data: {
@@ -74,6 +95,13 @@ export const shipmentsRouter = router({
   updateShipmentById: publicProcedure
     .input(updateShipmentByIdInput)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated',
+        });
+      };
       const { id, ...updateData } = input;
       try {
         if (!id) {
@@ -99,6 +127,13 @@ export const shipmentsRouter = router({
   deleteShipmentById: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated',
+        });
+      };
       const id = input.id;
       try {
         const deletedShipment = await ctx.db.shipment.delete({
