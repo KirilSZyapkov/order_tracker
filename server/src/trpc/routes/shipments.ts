@@ -72,9 +72,29 @@ export const shipmentsRouter = router({
         });
       }
     }),
-    updateShipmentById: publicProcedure
+  updateShipmentById: publicProcedure
     .input(updateShipmentByIdInput)
-    .mutation(async({ctx, input})=>{
-      
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...updateData } = input;
+      try {
+        if (!id) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Shipment ID is required for update',
+          });
+        }
+        const updatedShipment = await ctx.db.shipment.update({
+          where: { id },
+          data: updateData
+        });
+        return updatedShipment;
+
+      } catch (e: unknown) {
+        console.error("Error updating shipment:", e);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update shipment',
+        });
+      }
     })
 });

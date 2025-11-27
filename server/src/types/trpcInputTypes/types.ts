@@ -22,6 +22,7 @@ export const createNewShipmentInput = z.object({
 export type CreateNewShipmentInput = z.infer<typeof createNewShipmentInput>;
 
 export const updateShipmentByIdInput = z.object({
+  id: z.string(),
   orderNumber: z.string().optional(),
   autherId: z.string().optional(),
   truckId: z.string().optional(),
@@ -37,8 +38,10 @@ export const updateShipmentByIdInput = z.object({
   phone: z.string().optional(),
   gpsCoordinates: z.string().optional(),
   recipient: z.string().optional(),
-  status: z.enum(['pending', 'inTransit', 'delivered']),
-  updatedAt: z.string().optional(),
+
+  status: z.enum(['pending', 'inTransit', 'delivered']).optional(),
+
+  updatedAt: z.string().optional() // можеш да го махнеш ако го сетваш автоматично
 });
 
 export type UpdateShipmentByIdInput = z.infer<Partial<typeof updateShipmentByIdInput>>;
