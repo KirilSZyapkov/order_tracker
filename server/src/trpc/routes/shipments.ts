@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { createNewShipmentInput } from '../../types/trpcInputTypes/types';
+import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trpcInputTypes/types';
 import { da } from 'zod/v4/locales';
 
 export const shipmentsRouter = router({
@@ -71,5 +71,10 @@ export const shipmentsRouter = router({
           message: 'Failed to create shipment',
         });
       }
+    }),
+    updateShipmentById: publicProcedure
+    .input(updateShipmentByIdInput)
+    .mutation(async({ctx, input})=>{
+      
     })
 });
