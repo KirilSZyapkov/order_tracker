@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trpcInputTypes/types';
-import { da } from 'zod/v4/locales';
 
 export const shipmentsRouter = router({
   // Get all shipments
@@ -94,6 +93,23 @@ export const shipmentsRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to update shipment',
+        });
+      }
+    }),
+  deleteShipmentById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const id = input.id;
+      try {
+        const deletedShipment = await ctx.db.shipment.delete({
+          where: { id }
+        });
+        return deletedShipment;
+      } catch (e: unknown) {
+        console.error("Error deleting shipment:", e);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete shipment',
         });
       }
     })
