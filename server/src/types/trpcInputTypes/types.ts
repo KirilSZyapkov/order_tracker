@@ -45,3 +45,15 @@ export const updateShipmentByIdInput = z.object({
 });
 
 export type UpdateShipmentByIdInput = z.infer<Partial<typeof updateShipmentByIdInput>>;
+
+export const createNewUserInput = z.object({
+  clerkId: z.string().min(1, 'Clerk ID is required'),
+  firstName: z.string().min(1, 'First name is required'),
+  secondName: z.string().min(1, 'Second name is required'),
+  email: z.string().min(1,'Email is required'),
+  phone: z.string().optional(),
+  shipments: z.array(z.string()).default([]),
+  role: z.enum(['admin', 'user']).default('user'),
+});
+
+export type CreateNewUserInput = z.infer<typeof createNewUserInput>;

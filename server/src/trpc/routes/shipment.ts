@@ -3,7 +3,7 @@ import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trpcInputTypes/types';
 
-export const shipmentsRouter = router({
+export const shipmentRouter = router({
   // Get all shipments
   getAllShipments: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.userId;
@@ -84,6 +84,7 @@ export const shipmentsRouter = router({
             phone: input.phone,
           }
         });
+        ctx.io?.emit('shipmentCreated', newCreatedShipment);
         return newCreatedShipment;
       } catch (e: unknown) {
         throw new TRPCError({
@@ -114,6 +115,7 @@ export const shipmentsRouter = router({
           where: { id },
           data: updateData
         });
+        ctx.io?.emit('shipmentUpdated', updatedShipment);
         return updatedShipment;
 
       } catch (e: unknown) {
@@ -139,6 +141,7 @@ export const shipmentsRouter = router({
         const deletedShipment = await ctx.db.shipment.delete({
           where: { id }
         });
+        ctx.io?.emit('shipmentDeleted', deletedShipment);
         return deletedShipment;
       } catch (e: unknown) {
         console.error("Error deleting shipment:", e);

@@ -44,10 +44,18 @@ model User {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   clerkId   String    @unique
   email     String    @unique
-  name      String?
+  firstName      String
+  secondName  String
+  phone     String?
   shipments String[]  @default([])
+  role      Role @default(user)
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+}
+
+enum Role {
+  admin
+  user
 }
 
 model Truck{
