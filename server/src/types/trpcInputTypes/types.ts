@@ -57,3 +57,9 @@ export const createNewUserInput = z.object({
 });
 
 export type CreateNewUserInput = z.infer<typeof createNewUserInput>;
+
+export const createNewTruckInput = z.object({
+  plateNumber: z.string().min(1, 'Plate number is required'),
+});
+
+export type CreateNewTruckInput = z.infer<typeof createNewTruckInput>;

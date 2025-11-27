@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewUserInput } from '../../types/trpcInputTypes/types';
