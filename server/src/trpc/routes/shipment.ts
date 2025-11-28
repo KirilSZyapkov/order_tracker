@@ -2,12 +2,12 @@ import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trpcInputTypes/types';
-import type { Shipment } from '@prisma/client';
 
 export const shipmentRouter = router({
   // Get all shipments
-  getAllShipments: publicProcedure.query(async ({ ctx }) => {
+  getAllShipments: publicProcedure.input(z.object({ organizationName: z.string() })).query(async ({ ctx, input }) => {
     const userId = ctx.userId;
+    const organizationName = input.organizationName;
     if (!userId) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -15,7 +15,9 @@ export const shipmentRouter = router({
       });
     };
     try {
-      const shipments = await ctx.db.shipment.findMany();
+      const shipments = await ctx.db.shipment.findMany({
+        where: { organizationName }
+      });
       if (shipments.length === 0) {
         throw new TRPCError({
           code: 'NOT_FOUND',
@@ -76,8 +78,8 @@ export const shipmentRouter = router({
             autherId: input.autherId,
             truckId: input.truckId,
             truckNumber: input.truckNumber,
-            clientName: input.clientName,            
-            deliveryAddress: input.deliveryAddress,            
+            clientName: input.clientName,
+            deliveryAddress: input.deliveryAddress,
             deliveryDay: input.deliveryDay,
             phone: input.phone,
             status: input.status,
