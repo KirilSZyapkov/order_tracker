@@ -6,3 +6,5 @@ router.get('/health', (req, res) => {
 });
 
 export default router;
+
+// routes/health.ts - за търсене в чат джи пи ти
