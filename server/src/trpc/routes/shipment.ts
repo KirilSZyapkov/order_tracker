@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trpcInputTypes/types';
+import type { Shipment } from '@prisma/client';
 
 export const shipmentRouter = router({
   // Get all shipments
@@ -75,13 +76,12 @@ export const shipmentRouter = router({
             autherId: input.autherId,
             truckId: input.truckId,
             truckNumber: input.truckNumber,
-            clientName: input.clientName,
-            loadingAddress: input.loadingAddress,
-            deliveryAddress: input.deliveryAddress,
-            loadingDay: input.loadingDay,
+            clientName: input.clientName,            
+            deliveryAddress: input.deliveryAddress,            
             deliveryDay: input.deliveryDay,
-            status: input.status,
             phone: input.phone,
+            status: input.status,
+            organizationName: input.organizationName,
           }
         });
         ctx.io?.emit('shipmentCreated', newCreatedShipment);

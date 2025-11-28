@@ -19,17 +19,15 @@ model Shipment{
  truckId      String?
  truckNumber  String?
  clientName   String
- loadingAddress String
  deliveryAddress String
- loadingDay String
  deliveryDay String
- actualLoadingDay String?
  actualDeliveryDay String?
  deliveryTime String?
  phone String
  gpsCoordinates String?
- recipient String?
+ recipientName String?
  status       Status @default(pending)
+ organizationName String
  createdAt     DateTime  @default(now())
  updatedAt     DateTime?
 }
@@ -38,16 +36,16 @@ enum Status {
   pending
   inTransit
   delivered
+  delayed
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  clerkId   String    @unique
+  id        String    @id @map("_id")
   email     String    @unique
   firstName      String
   secondName  String
   phone     String?
-  shipments String[]  @default([])
+  organizationName String
   role      Role @default(user)
   createdAt DateTime  @default(now())
   updatedAt DateTime?
@@ -61,6 +59,7 @@ enum Role {
 model Truck{
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   plateNumber      String
+  organizationName  String
   createdAt DateTime  @default(now())
   updatedAt DateTime?
 }

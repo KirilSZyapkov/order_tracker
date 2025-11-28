@@ -9,12 +9,12 @@ export const userRouter = router({
       try {
         const newUser = await ctx.db.user.create({
           data:{
-            clerkId: input.clerkId,
+            id: input.clerkId,
+            email: input.email,
             firstName: input.firstName,
             secondName: input.secondName,
-            email: input.email,
             phone: input.phone,
-            shipments: input.shipments,
+            organizationName: input.organizationName,
             role: input.role
           }
         });

@@ -28,7 +28,7 @@ export const truckRouter = router({
     }
   }),
   getTruckById: publicProcedure
-  .input(z.object({id:z.string()}))
+  .input(z.object({id:z.string(), organizationName:z.string()}))
   .query(async ({ctx, input})=>{
     const userId = ctx.userId;
     if(!userId){
@@ -38,6 +38,7 @@ export const truckRouter = router({
       });
     };
     const id = input.id;
+    const organizationName = input.organizationName;
     if(!id){
       throw new TRPCError({
         code: 'BAD_REQUEST',
@@ -45,8 +46,11 @@ export const truckRouter = router({
       });
     };
     try {
-      const truck = await ctx.db.truck.findUnique({
-        where: {id}
+      const truck = await ctx.db.truck.findMany({
+        where: {
+          id,
+          organizationName
+        }
       });
       if(!truck){
         throw new TRPCError({

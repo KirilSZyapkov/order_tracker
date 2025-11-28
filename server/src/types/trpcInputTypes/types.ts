@@ -6,17 +6,15 @@ export const createNewShipmentInput = z.object({
   truckId: z.string().optional(),
   truckNumber: z.string().optional(),
   clientName: z.string().min(1, 'Client name is required'),
-  loadingAddress: z.string().min(1, 'Loading address is required'),
   deliveryAddress: z.string().min(1, 'Delivery address is required'),
-  loadingDay: z.string().min(1, 'Loading day is required'),
   deliveryDay: z.string().min(1, 'Delivery day is required'),
-  actualLoadingDay: z.string().optional(),
   actualDeliveryDay: z.string().optional(),
   deliveryTime: z.string().optional(),
   phone: z.string().min(1, 'Phone is required'),
-  status: z.enum(['pending', 'inTransit', 'delivered']).default('pending'),
   gpsCoordinates: z.string().optional(),
-  recipient: z.string().optional()
+  recipientName: z.string().optional(),
+  status: z.enum(['pending', 'inTransit', 'delivered']).default('pending'),
+  organizationName: z.string().min(1, 'Organization name is required'),
 });
 
 export type CreateNewShipmentInput = z.infer<typeof createNewShipmentInput>;
@@ -28,31 +26,27 @@ export const updateShipmentByIdInput = z.object({
   truckId: z.string().optional(),
   truckNumber: z.string().optional(),
   clientName: z.string().optional(),
-  loadingAddress: z.string().optional(),
   deliveryAddress: z.string().optional(),
-  loadingDay: z.string().optional(),
   deliveryDay: z.string().optional(),
-  actualLoadingDay: z.string().optional(),
   actualDeliveryDay: z.string().optional(),
   deliveryTime: z.string().optional(),
   phone: z.string().optional(),
   gpsCoordinates: z.string().optional(),
-  recipient: z.string().optional(),
-
+  recipientName: z.string().optional(),
   status: z.enum(['pending', 'inTransit', 'delivered']).optional(),
-
+  organizationName: z.string().optional(),
   updatedAt: z.string().optional() // можеш да го махнеш ако го сетваш автоматично
 });
 
 export type UpdateShipmentByIdInput = z.infer<Partial<typeof updateShipmentByIdInput>>;
 
 export const createNewUserInput = z.object({
-  clerkId: z.string().min(1, 'Clerk ID is required'),
+  clerkId: z.string().min(1, 'ID is required'),
+  email: z.string().min(1,'Email is required'),
   firstName: z.string().min(1, 'First name is required'),
   secondName: z.string().min(1, 'Second name is required'),
-  email: z.string().min(1,'Email is required'),
   phone: z.string().optional(),
-  shipments: z.array(z.string()).default([]),
+  organizationName: z.string().min(1, 'Organization name is required'),
   role: z.enum(['admin', 'user']).default('user'),
 });
 
@@ -60,6 +54,7 @@ export type CreateNewUserInput = z.infer<typeof createNewUserInput>;
 
 export const createNewTruckInput = z.object({
   plateNumber: z.string().min(1, 'Plate number is required'),
+  organizationName: z.string().min(1, 'Organization name is required'),
 });
 
 export type CreateNewTruckInput = z.infer<typeof createNewTruckInput>;
