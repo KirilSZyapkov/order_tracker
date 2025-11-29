@@ -1,4 +1,4 @@
-import { optional, z } from 'zod';
+import { z } from 'zod';
 
 export const createNewShipmentInput = z.object({
   orderNumber: z.string().min(1, 'Order number is required'),
