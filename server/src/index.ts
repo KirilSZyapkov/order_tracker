@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import {Server as SocketIOServer} from 'socket.io';
+import { Server as SocketIOServer } from 'socket.io';
 import { appRouter, AppRouter } from './trpc/router';
 import { createContext } from './trpc/context';
 import healthRoute from './routes/health';
@@ -17,18 +17,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", healthRoute);
 
 const httpServer = http.createServer(app);
-const io = new SocketIOServer(httpServer,{
-  cors:{origin:"*"}
+const io = new SocketIOServer(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log(`New client connected: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
 });
 
 app.use(
   '/trpc',
   trpcExpress.createExpressMiddleware({
     router: appRouter,
-    createContext: (opts)=> createContext({ 
+    createContext: (opts) => createContext({
       req: opts.req,
       res: opts.res,
-      io 
+      io
     }),
   })
 );
@@ -37,7 +48,7 @@ app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.get('/', (req, res) => {
   console.log("Welcome to home page!");
-  
+
   res.send('Welcome to the tRPC Express Server with Socket.IO!');
 });
 

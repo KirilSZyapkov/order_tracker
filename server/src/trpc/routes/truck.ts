@@ -6,12 +6,12 @@ import { createNewTruckInput } from "../../types/trpcInputTypes/types";
 export const truckRouter = router({
   getAllTrucks: publicProcedure.input(z.object({ organizationName: z.string() })).query(async ({ ctx, input }) => {
     const userId = ctx.userId;
-    if (!userId) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'User not authenticated',
-      });
-    };
+    // if (!userId) {
+    //   throw new TRPCError({
+    //     code: 'UNAUTHORIZED',
+    //     message: 'User not authenticated',
+    //   });
+    // };
     const organizationName = input.organizationName;
     try {
       const trucks = await ctx.db.truck.findMany({
@@ -35,12 +35,12 @@ export const truckRouter = router({
     .input(z.object({ id: z.string(), organizationName: z.string() }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.userId;
-      if (!userId) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not authenticated',
-        });
-      };
+      // if (!userId) {
+      //   throw new TRPCError({
+      //     code: 'UNAUTHORIZED',
+      //     message: 'User not authenticated',
+      //   });
+      // };
       const id = input.id;
       const organizationName = input.organizationName;
       if (!id) {
@@ -77,12 +77,12 @@ export const truckRouter = router({
     .input(createNewTruckInput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.userId;
-      if (!userId) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not authenticated',
-        });
-      };
+      // if (!userId) {
+      //   throw new TRPCError({
+      //     code: 'UNAUTHORIZED',
+      //     message: 'User not authenticated',
+      //   });
+      // };
       try {
         const newTruck = await ctx.db.truck.create({
           data: {
