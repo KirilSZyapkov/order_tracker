@@ -5,6 +5,6 @@ import {useUser} from "@clerk/nextjs";
 import { trpc } from "@/utils/trpc";
 import {toast} from "sonner";
 
-export default function syncUser() {
+export default function SyncUser() {
   return null;
 }

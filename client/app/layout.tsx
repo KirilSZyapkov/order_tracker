@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc, trpcClient } from '@/utils/trpc';
+import SyncUser from "@/components/shared/syncUser";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,6 +37,7 @@ export default function RootLayout({
             <body
               className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
+              <SyncUser />
               {children}
               <Toaster />
             </body>
