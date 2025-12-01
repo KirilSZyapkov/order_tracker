@@ -1,14 +1,15 @@
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewUserInput } from '../../types/trpcInputTypes/types';
+import { z } from 'zod';
 
 export const userRouter = router({
   createNewUser: publicProcedure
     .input(createNewUserInput)
-    .mutation(async({ ctx, input })=> {
+    .mutation(async ({ ctx, input }) => {
       try {
         const newUser = await ctx.db.user.create({
-          data:{
+          data: {
             id: input.clerkId,
             email: input.email,
             firstName: input.firstName,
@@ -26,5 +27,27 @@ export const userRouter = router({
           message: 'Failed to create user',
         });
       }
-})
+    }),
+  getUserById: publicProcedure
+    .query(async ({ ctx }) => {
+      const clerkId = ctx.userId;
+      if (!clerkId) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      };
+      try {
+        const curUser = await ctx.db.user.findFirst({
+          where: { id: clerkId }
+        });
+        return curUser;
+      } catch (e: unknown) {
+        console.error("Error fetching user:", e);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch user',
+        });
+      }
+    })
 })
