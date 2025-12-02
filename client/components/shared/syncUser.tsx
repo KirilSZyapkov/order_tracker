@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { trpc } from "@/utils/trpc";
 import { toast } from "sonner";
 import { NewUserFormType } from "@/types/form_types/newUserFormType";
-
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { useState } from "react";
 
 export default function SyncUser() {
   const { user, isSignedIn, isLoaded } = useUser();
-
+  const router = useRouter();
   // Form local state
   const [formData, setFormData] = useState<NewUserFormType>({
     firstName: "",
@@ -43,7 +43,7 @@ export default function SyncUser() {
     },
   });
 
-  if(currentUser && user) return null; // No need to show the form if user is already synced
+  if (currentUser && user) return null; // No need to show the form if user is already synced
 
   // Handle form submission
   async function onSubmitNewUser(e: React.FormEvent) {
@@ -53,16 +53,17 @@ export default function SyncUser() {
       toast.error("Please fill out all fields.");
       return;
     }
-
-    createUser.mutate({
-      clerkId: user?.id,
-      email: formData.email,
-      firstName: formData.firstName,
-      secondName: formData.secondName,
-      phone: formData.phone,
-      organizationName: formData.organizationName,
-      role: "USER"
-    });
+    if (user) {
+      createUser.mutate({
+        clerkId: user?.id,
+        email: formData.email,
+        firstName: formData.firstName,
+        secondName: formData.secondName,
+        phone: formData.phone,
+        organizationName: formData.organizationName,
+        role: "user"
+      });
+    }
   }
 
   return (
@@ -70,7 +71,7 @@ export default function SyncUser() {
       <Card className="w-full max-w-md shadow-lg border rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-center">
-            {currentUser?.user ? "User Information" : "Create New User"}
+            {currentUser?.firstName ? "User Information" : "Create New User"}
           </CardTitle>
         </CardHeader>
 
@@ -79,14 +80,14 @@ export default function SyncUser() {
             <div className="flex justify-center py-10">
               <Loader2 className="animate-spin w-6 h-6" />
             </div>
-          ) : currentUser?.user ? (
+          ) : currentUser?.id ?(
             // If user exists, show basic info
             <div className="space-y-2 text-center">
               <p className="text-sm text-muted-foreground">
                 You are already synced.
               </p>
-              <p className="font-medium">{currentUser.user.name}</p>
-              <p className="text-muted-foreground">{currentUser.user.email}</p>
+              <p className="font-medium">{currentUser.firstName}</p>
+              <p className="text-muted-foreground">{currentUser.email}</p>
             </div>
           ) : (
             // If no user exists → show form
