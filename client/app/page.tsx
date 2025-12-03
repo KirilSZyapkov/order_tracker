@@ -36,7 +36,7 @@ export default function SyncUser() {
   const createUser = trpc.user.createNewUser.useMutation({
     onSuccess: async () => {
       toast.success("User synced successfully!");
-      await refetch();
+      router.push("/dashboard");
     },
     onError: () => {
       toast.error("❌ Failed to create user.");

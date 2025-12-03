@@ -6,7 +6,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc } from '@/utils/trpc';
 import { httpBatchLink } from "@trpc/client";
-import SyncUser from "@/components/shared/syncUser";
 import "./globals.css";
 import { useState } from "react";
 
@@ -43,7 +42,6 @@ export default function RootLayout({
             <body
               className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-              <SyncUser />
               {children}
               <Toaster />
             </body>
