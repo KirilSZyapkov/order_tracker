@@ -43,7 +43,7 @@ export default function SyncUser() {
     },
   });
 
-  if (currentUser && user) return null; // No need to show the form if user is already synced
+  if (currentUser && user) return router.push("/dashboard"); // No need to show the form if user is already synced
 
   // Handle form submission
   async function onSubmitNewUser(e: React.FormEvent) {
@@ -67,7 +67,7 @@ export default function SyncUser() {
   }
 
   return (
-    <section className="flex justify-center mt-10 px-4">
+    <section className="flex justify-center items-center mt-10 px-4 h-screen">
       <Card className="w-full max-w-md shadow-lg border rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-center">

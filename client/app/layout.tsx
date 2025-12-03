@@ -40,7 +40,7 @@ export default function RootLayout({
         <QueryClientProvider client={queryClient}>
           <html lang="en">
             <body
-              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+              className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
             >
               {children}
               <Toaster />
