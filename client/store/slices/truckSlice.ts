@@ -11,15 +11,15 @@ export interface Truck {
 export interface TruckState {
     trucks: Truck[];
     setTrucks: (trucks: Truck[])=>void;
-    addTruck: (trucks: Truck)=>void;
-    updateTruck: (trucks: Truck)=>void;
-    removeTruck: (trucks: Truck)=>void;
+    addTruck: (truck: Truck)=>void;
+    updateTruck: (truck: Truck)=>void;
+    removeTruck: (id: String)=>void;
 };
 
 export const createTruckSlice: StateCreator<TruckState> = (set)=>({
-    truck: [],
+    trucks: [],
     setTrucks: (trucks)=> set({trucks}),
-    addTruck: (truck)=> set((state)=>({trucks: [...state.truck, truck]})),
+    addTruck: (truck)=> set((state)=>({trucks: [...state.trucks, truck]})),
     updateTruck: (truck)=> set((state)=> ({trucks: state.trucks.map((t)=> t.id === truck.id ? truck: t)})),
     removeTruck: (id)=> set((state)=> ({trucks: state.trucks.filter((t)=> t.id !== id)}))
 })

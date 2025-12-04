@@ -8,6 +8,7 @@ import { trpc } from '@/utils/trpc';
 import { httpBatchLink } from "@trpc/client";
 import "./globals.css";
 import { useState } from "react";
+import SocketProvider from "@/providers/SocketProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,9 @@ export default function RootLayout({
             <body
               className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
             >
-              {children}
+              <SocketProvider>
+                {children}
+              </SocketProvider>
               <Toaster />
             </body>
           </html>

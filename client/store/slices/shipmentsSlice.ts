@@ -12,8 +12,8 @@ export interface ShipmentsState {
     shipments: Shipment[];
 
     setShipments: (s:Shipment[])=> void;
-    addShipments: (s:Shipment)=> void;
-    updateShipments: (s:Shipment)=> void;
+    addShipment: (s:Shipment)=> void;
+    updateShipment: (s:Shipment)=> void;
 };
 
 export const createShipmentsSlice: StateCreator<ShipmentsState> = (set)=>({
