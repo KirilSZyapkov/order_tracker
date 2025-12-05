@@ -1,15 +1,25 @@
-import {StateCreator} from "zustand";
-import {produce} from "immer";
+// store/middleware/immer.ts
+import { StateCreator } from "zustand";
+import { produce } from "immer";
 
-export const immer = <T>(initializer: StateCreator<T>): StateCreator<T> =>
-(set, get, store) =>
-    initializer(
-        (partial, replace)=>{
-            const nextState =
-            typeof partial === "function" ? produce(partial) : partial;
-            return set(nextState, replace);
-        },
-        get,
-        store          
-
-    )
+export function immer<T extends object>(
+  config: StateCreator<T>
+): StateCreator<T> {
+  return (set, get, store) =>
+    config(
+      (partial, replace) => {
+        // Ако partial е функция => това е recipe на immer
+        if (typeof partial === "function") {
+          set(
+            produce(partial) as (state: T) => T,
+            replace
+          );
+        } else {
+          // Ако partial е обект
+          set(partial as Partial<T>, replace);
+        }
+      },
+      get,
+      store
+    );
+}
