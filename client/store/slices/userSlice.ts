@@ -1,4 +1,4 @@
-import {StateCreator} from "zustand";
+import { StateCreator } from "zustand";
 
 export interface UserState {
     user: {
@@ -8,20 +8,20 @@ export interface UserState {
         email: string;
         phone: string;
         role: "admin" | "user";
-        organization: string;
+        organizationName: string;
         createdAt: string;
         updatedAt: string;
     } | null;
 
     isUserLoaded: boolean;
 
-    setUser: (user: UserState["user"])=> void;
-    clearUser: ()=> void;
+    setUser: (user: UserState["user"]) => void;
+    clearUser: () => void;
 }
 
-export const createUserSlice: StateCreator<UserState> = (set)=>({
+export const createUserSlice: StateCreator<UserState> = (set) => ({
     user: null,
     isUserLoaded: false,
-    setUser: (user)=> set({user, isUserLoaded: true}),
-    clearUser: ()=> set({user: null, isUserLoaded: false})
+    setUser: (user) => set(()=> ({user, isUserLoaded: true})),
+    clearUser: () => set(()=> ({ user: null, isUserLoaded: false }))
 })
