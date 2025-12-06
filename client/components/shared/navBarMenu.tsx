@@ -2,18 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 import { LayoutDashboard, List, Truck, UsersRound, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/store/store";
 
 export default function NavBarMenu() {
   const [open, setOpen] = useState(false);
-  const curUser = useAppStore((state)=> state.user);
-
-  console.log(curUser);
-  
+  const curUser = useAppStore((state) => state.user);
 
   return (
     <nav className="w-full border-b border-gray-200 bg-white/80 backdrop-blur-md shadow-sm">
@@ -28,12 +24,13 @@ export default function NavBarMenu() {
             <Truck /> <span className="text-xl">Trucks</span>
           </Link>
           {/* For Admins */}
-          <Link href="/dashboard" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
-            <LayoutDashboard /> <span className="text-xl">Dashboard</span>
-          </Link>
-          <Link href="/users" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
-            <UsersRound /> <span className="text-xl">Users</span>
-          </Link>
+          {curUser?.role !== "admin" &&
+            <><Link href="/dashboard" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
+              <LayoutDashboard /> <span className="text-xl">Dashboard</span>
+            </Link>
+              <Link href="/users" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
+                <UsersRound /> <span className="text-xl">Users</span>
+              </Link></>}
           <SignedIn>
             <Link href={`/user/`} className="cursor-pointer">My Account</Link>
             <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
