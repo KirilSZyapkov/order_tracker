@@ -1,19 +1,19 @@
 export type ShipmentType = {
-  id: String
-  orderNumber: String
-  autherId: String
-  truckId?: String
-  truckNumber?: String
-  clientName: String
-  deliveryAddress: String
-  deliveryDay: String
-  actualDeliveryDay?: String
-  deliveryTime?: String
-  phone: String
-  gpsCoordinates?: String
-  recipientName?: String
-  status: String
-  organizationName: String
-  createdAt: String
-  updatedAt: String
+  id: string
+  orderNumber: string
+  autherId: string
+  truckId?: string
+  truckNumber?: string
+  clientName: string
+  deliveryAddress: string
+  deliveryDay: string
+  actualDeliveryDay?: string
+  deliveryTime?: string
+  phone: string
+  gpsCoordinates?: string
+  recipientName?: string
+  status: string
+  organizationName: string
+  createdAt: string
+  updatedAt: string
 }
