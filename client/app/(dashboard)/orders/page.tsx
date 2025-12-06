@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAppStore } from "@/store/store";
 import { trpc } from "@/utils/trpc";
 
-import OrdersList from "./_components/ordersList";
+import OrdersList from "./_components/orderList";
 
 export default function OrdersPage() {
 
