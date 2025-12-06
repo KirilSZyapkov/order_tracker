@@ -6,11 +6,11 @@ export interface UserState {
         firstName: string;
         secondName: string;
         email: string;
-        phone: string;
+        phone: string | null;
         role: "admin" | "user";
         organizationName: string;
         createdAt: string;
-        updatedAt: string;
+        updatedAt: string | null;
     } | null;
 
     isUserLoaded: boolean;

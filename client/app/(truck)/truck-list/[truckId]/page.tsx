@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useAppStore } from "@/store/store";
 import { useConfirmDelivery } from "@/hooks/useConfirmDelivery";
 import { ShipmentCard } from "@/components/shared/shipmentCard";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { ConfirmDialog } from "@/components/shared/confirmDialog";
 
 
 export default function DriverPage() {

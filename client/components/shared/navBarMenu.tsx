@@ -6,9 +6,14 @@ import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/n
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, List, Truck, UsersRound, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppStore } from "@/store/store";
 
 export default function NavBarMenu() {
   const [open, setOpen] = useState(false);
+  const curUser = useAppStore((state)=> state.user);
+
+  console.log(curUser);
+  
 
   return (
     <nav className="w-full border-b border-gray-200 bg-white/80 backdrop-blur-md shadow-sm">
@@ -34,13 +39,6 @@ export default function NavBarMenu() {
             <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
           </SignedIn>
 
-          <SignedOut>
-            <SignInButton>
-              <Button className="cursor-pointer">
-                Sign In
-              </Button>
-            </SignInButton>
-          </SignedOut>
         </div>
         {/* Mobile Menu Button */}
         <button
@@ -82,16 +80,6 @@ export default function NavBarMenu() {
                   }}
                 />
               </SignedIn>
-
-              <SignedOut>
-                <SignInButton>
-                  <Button
-                    onClick={() => setOpen(false)} className="cursor-pointer"
-                  >
-                    Sign In
-                  </Button>
-                </SignInButton>
-              </SignedOut>
             </div>
           </motion.div>
         )}

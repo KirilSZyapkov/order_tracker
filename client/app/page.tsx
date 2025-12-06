@@ -10,10 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useAppStore } from "@/store/store";
 
 export default function SyncUser() {
   const { user, isSignedIn, isLoaded } = useUser();
   const router = useRouter();
+  const setCurrentUser = useAppStore((state) => state.setUser)
   // Form local state
   const [formData, setFormData] = useState<NewUserFormType>({
     firstName: "",
@@ -34,8 +36,9 @@ export default function SyncUser() {
 
   // Mutation: create user
   const createUser = trpc.user.createNewUser.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (newUser) => {
       toast.success("User synced successfully!");
+      setCurrentUser(newUser);
       router.push("/dashboard");
     },
     onError: () => {
@@ -80,7 +83,7 @@ export default function SyncUser() {
             <div className="flex justify-center py-10">
               <Loader2 className="animate-spin w-6 h-6" />
             </div>
-          ) : currentUser?.id ?(
+          ) : currentUser?.id ? (
             // If user exists, show basic info
             <div className="space-y-2 text-center">
               <p className="text-sm text-muted-foreground">

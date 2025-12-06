@@ -1,7 +1,6 @@
 import { router, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { createNewUserInput } from '../../types/trpcInputTypes/types';
-import { z } from 'zod';
 
 export const userRouter = router({
   createNewUser: publicProcedure
