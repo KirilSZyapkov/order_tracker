@@ -211,6 +211,7 @@ export const columns: ColumnDef<ShipmentType>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="cursor-pointer"
       >
         Order Number
         <ArrowUpDown />

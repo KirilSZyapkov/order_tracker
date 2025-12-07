@@ -5,20 +5,20 @@ export interface Shipment {
     id: string;
     orderNumber: string;
     autherId: string;
-    truckId: string;
-    truckNumber: string;
+    truckId: string | null;
+    truckNumber: string | null;
     clientName: string;
     deliveryAddress: string;
     deliveryDay: string;
-    actualDeliveryDay: string;
-    deliveryTime: string;
+    actualDeliveryDay: string | null;
+    deliveryTime: string | null;
     phone: string;
-    gpsCoordinates: string;
-    recipientName: string;
-    status: "pending" | "in_transit" | "delivered" | "delayed";
+    gpsCoordinates: string | null;
+    recipientName: string | null;
+    status: "pending" | "inTransit" | "delivered" | "delayed";
     organizationName: string;
     createdAt: string;
-    updatedAt: string;
+    updatedAt: string | null;
 };
 
 export interface ShipmentsState {

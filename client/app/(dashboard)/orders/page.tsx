@@ -5,12 +5,14 @@ import { useAppStore } from "@/store/store";
 import { trpc } from "@/utils/trpc";
 
 import OrdersList from "./_components/orderList";
+import AddShipmentForm from "./_components/addShipmentForm";
 
 export default function OrdersPage() {
 
   return (
     <article className="px-5">
       <h1>Orders page</h1>
+      <AddShipmentForm/>
       <OrdersList />
     </article>
   )
