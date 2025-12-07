@@ -9,7 +9,7 @@ import OrdersList from "./_components/orderList";
 export default function OrdersPage() {
 
   return (
-    <article>
+    <article className="px-5">
       <h1>Orders page</h1>
       <OrdersList />
     </article>

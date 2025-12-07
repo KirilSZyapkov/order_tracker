@@ -35,6 +35,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ShipmentType } from "@/types/shipmentType";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const data: ShipmentType[] = [
   {
@@ -198,7 +205,7 @@ const data: ShipmentType[] = [
 
 
 export const columns: ColumnDef<ShipmentType>[] = [
-   {
+  {
     accessorKey: "orderNumber",
     header: ({ column }) => (
       <Button
@@ -210,12 +217,6 @@ export const columns: ColumnDef<ShipmentType>[] = [
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
-  },
-
-  {
-    accessorKey: "truckNumber",
-    header: "Truck Number",
-    cell: ({ row }) => <div>{row.getValue("truckNumber") || "-"}</div>,
   },
 
   {
@@ -264,6 +265,22 @@ export const columns: ColumnDef<ShipmentType>[] = [
     accessorKey: "recipientName",
     header: "Recipient",
     cell: ({ row }) => <div>{row.getValue("recipientName") || "-"}</div>,
+  },
+
+  {
+    accessorKey: "truckNumber",
+    header: "Truck Number",
+    cell: ({ row }) => <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Truck number" />
+      </SelectTrigger>
+      <SelectContent>
+        {/* Todo... to add all trucks */}
+        <SelectItem value="light">Light</SelectItem>
+        <SelectItem value="dark">Dark</SelectItem>
+        <SelectItem value="system">System</SelectItem>
+      </SelectContent>
+    </Select>,
   },
 
   {
