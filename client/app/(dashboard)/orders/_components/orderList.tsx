@@ -349,6 +349,7 @@ export default function ordersList() {
 
   return (
     <div className="w-full">
+      <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">Orders list</h2>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter orders..."
