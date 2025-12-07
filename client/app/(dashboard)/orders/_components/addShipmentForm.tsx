@@ -23,7 +23,7 @@ export default function addShipmentForm() {
 
   const createShipment = trpc.shipment.createNewShipment.useMutation({
     onSuccess: async (newShipments) => {
-      toast.success("Shipment created sucsesfuly");
+      toast.success("Shipment created successfully");
       addShipments(newShipments);
     },
     onError: () => {

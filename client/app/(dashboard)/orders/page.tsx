@@ -1,5 +1,3 @@
-"use client";
-
 import OrdersList from "./_components/orderList";
 import AddShipmentForm from "./_components/addShipmentForm";
 import { Separator } from "@/components/ui/separator";

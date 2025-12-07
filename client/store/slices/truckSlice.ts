@@ -5,7 +5,7 @@ export interface Truck {
     organizationName: string;
     plateNumber: string;
     createdAt: string;
-    updatedAt: string;
+    updatedAt: string | null;
 };
 
 export interface TruckState {
