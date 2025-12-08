@@ -22,7 +22,7 @@ export interface Shipment {
 };
 
 export interface ShipmentsState {
-    shipments: Shipment[] | [];
+    shipments: Shipment[];
 
     setShipments: (shipments: Shipment[]) => void;
     addShipment: (shipment: Shipment) => void;

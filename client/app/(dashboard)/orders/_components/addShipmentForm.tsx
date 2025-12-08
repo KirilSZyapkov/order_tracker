@@ -8,23 +8,29 @@ import { NewShipmentFormType } from "@/types/form_types/newShipmentFormType";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useShipmentsSync } from "@/hooks/useShipmentsSync";
+
+const initialData = {
+  orderNumber: "",
+  clientName: "",
+  deliveryAddress: "",
+  deliveryDay: "",
+  phone: "",
+  gpsCoordinates: "",
+}
 
 export default function addShipmentForm() {
-  const [formData, setFormData] = useState<NewShipmentFormType>({
-    orderNumber: "",
-    clientName: "",
-    deliveryAddress: "",
-    deliveryDay: "",
-    phone: "",
-    gpsCoordinates: "",
-  });
-
+  const [formData, setFormData] = useState<NewShipmentFormType>(initialData);
+  
   const addShipments = useAppStore((state) => state.addShipment);
+  const user = useAppStore((state) => state.user);
+
 
   const createShipment = trpc.shipment.createNewShipment.useMutation({
     onSuccess: async (newShipments) => {
       toast.success("Shipment created successfully");
       addShipments(newShipments);
+      setFormData(initialData);
     },
     onError: () => {
       toast.error("❌ Failed to create user.");
@@ -33,7 +39,23 @@ export default function addShipmentForm() {
 
   async function onSubmintNewShipment(e: React.FormEvent) {
     e.preventDefault();
-    console.log(e);
+
+    if (!formData.clientName || !formData.deliveryAddress || !formData.orderNumber || !formData.deliveryDay || !formData.phone || user) {
+      toast.error("Please fill out all fields.");
+      return;
+    };
+    // Todo... да премахна фиктивните id и organizationName
+    createShipment.mutate({
+      ...formData,
+      autherId: "testId",
+      organizationName: "test organization",
+      truckId: "",
+      truckNumber: "",
+      actualDeliveryDay: "",
+      deliveryTime: "",
+      recipientName: "",
+      status: "pending",
+    });
 
   }
   return (

@@ -5,7 +5,9 @@ import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trp
 
 export const shipmentRouter = router({
   // Get all shipments
-  getAllShipments: publicProcedure.input(z.object({ organizationName: z.string() })).query(async ({ ctx, input }) => {
+  getAllShipments: publicProcedure
+  .input(z.object({ organizationName: z.string() }))
+  .query(async ({ ctx, input }) => {
     const userId = ctx.userId;
     const organizationName = input.organizationName;
     // if (!userId) {
@@ -44,7 +46,7 @@ export const shipmentRouter = router({
       // };
       const id = input.id;
       try {
-        const shipment = await ctx.db.shipment.findUnique({
+        const shipment = await ctx.db.shipment.findFirst({
           where: { id }
         });
         if (!shipment) {
@@ -53,6 +55,35 @@ export const shipmentRouter = router({
             message: `Shipment with id ${id} not found`,
           });
         }
+        return shipment;
+      } catch (e: unknown) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch shipment',
+        });
+      };
+    }),
+  getAssignedShipmentByTruckId: publicProcedure
+    .input(z.object({ truckId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      // if (!userId) {
+      //   throw new TRPCError({
+      //     code: 'UNAUTHORIZED',
+      //     message: 'User not authenticated',
+      //   });
+      // };
+      const truckId = input.truckId;
+      if(!truckId){
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: "Require id!" 
+        })
+      }
+      try {
+        const shipment = await ctx.db.shipment.findMany({
+          where: { truckId }
+        });
         return shipment;
       } catch (e: unknown) {
         throw new TRPCError({

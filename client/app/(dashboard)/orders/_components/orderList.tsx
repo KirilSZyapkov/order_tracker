@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/select"
 import { trpc } from "@/utils/trpc";
 import { useAppStore } from "@/store/store";
+import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 
 export default function ordersList() {
 
@@ -50,27 +51,28 @@ export default function ordersList() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-
   const user = useAppStore((state) => state.user);
   const shipment = useAppStore((state) => state.shipments);
   const setShipments = useAppStore((state) => state.setShipments);
+  useShipmentsSync({ organizationName: "test organization" });
 
-
+  
   const { data } = trpc.shipment.getAllShipments.useQuery(
     { organizationName: user?.organizationName || "" },
     { enabled: !!user }
   );
-
+  
   useEffect(() => {
     if (data) {
-      setShipments(data)
+      setShipments(data);
     } else {
-      setShipments([])
+      setShipments([]);
     }
   }, [data])
+  
+  console.log(shipment);
 
-
-  if (data) {
+  if (shipment) {
 
     const columns: ColumnDef<typeof data[0]>[] = [
       {
