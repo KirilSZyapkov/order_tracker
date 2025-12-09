@@ -41,7 +41,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { trpc } from "@/utils/trpc";
 import { useAppStore } from "@/store/store";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 
@@ -53,22 +52,10 @@ export default function ordersList() {
   const [rowSelection, setRowSelection] = useState({});
   const user = useAppStore((state) => state.user);
   const shipment = useAppStore((state) => state.shipments);
-  const setShipments = useAppStore((state) => state.setShipments);
 
-
-  const { data } = trpc.shipment.getAllShipments.useQuery(
-    { organizationName: user?.organizationName || "" },
-    { enabled: !!user }
-  );
+  console.log(user);
+  
   useShipmentsSync({ organizationName: "test organization" });
-
-  useEffect(() => {
-    if (data) {
-      setShipments(data);
-    } else {
-      setShipments([]);
-    }
-  }, [data])
 
   console.log(shipment);
 

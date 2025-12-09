@@ -9,6 +9,7 @@ import { httpBatchLink } from "@trpc/client";
 import "./globals.css";
 import { useState } from "react";
 import SocketProvider from "@/providers/SocketProvider";
+import { useUserSync } from "@/hooks/useUserSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,22 +36,30 @@ export default function RootLayout({
       ],
     })
   ));
+
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <ClerkProvider>
         <QueryClientProvider client={queryClient}>
-          <html lang="en">
-            <body
-              className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
-            >
-              <SocketProvider>
-                {children}
-              </SocketProvider>
-              <Toaster />
-            </body>
-          </html>
+          <UserSyncWrapper>
+            <html lang="en">
+              <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
+              >
+                <SocketProvider>
+                  {children}
+                </SocketProvider>
+                <Toaster />
+              </body>
+            </html>
+          </UserSyncWrapper>
         </QueryClientProvider>
       </ClerkProvider>
     </trpc.Provider>
   );
+}
+
+function UserSyncWrapper({ children }: { children: React.ReactNode }) {
+  useUserSync();
+  return <>{children}</>;
 }

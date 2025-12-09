@@ -30,15 +30,15 @@ export const userRouter = router({
   getUserById: publicProcedure
     .query(async ({ ctx }) => {
       const clerkId = ctx.userId;
-      if (!clerkId) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'User not found',
-        });
-      };
+      // if (!clerkId) {
+      //   throw new TRPCError({
+      //     code: 'NOT_FOUND',
+      //     message: 'User not found',
+      //   });
+      // };
       try {
         const curUser = await ctx.db.user.findFirst({
-          where: { id: clerkId }
+          where: { id: "test_id" }
         });
         return curUser;
       } catch (e: unknown) {

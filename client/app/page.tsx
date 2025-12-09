@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useAppStore } from "@/store/store";
+import Loader from "@/components/shared/Loader";
 
 export default function SyncUser() {
   const { user, isSignedIn, isLoaded } = useUser();
@@ -39,7 +40,7 @@ export default function SyncUser() {
     onSuccess: async (newUser) => {
       toast.success("User synced successfully!");
       setCurrentUser(newUser);
-      router.push("/dashboard");
+      router.push("/orders");
     },
     onError: () => {
       toast.error("❌ Failed to create user.");
@@ -55,10 +56,11 @@ export default function SyncUser() {
     if (!formData.firstName || !formData.email || !formData.secondName || !formData.phone) {
       toast.error("Please fill out all fields.");
       return;
-    }
-    if (user) {
+    };
+    if (!user) {
       createUser.mutate({
-        clerkId: user?.id,
+        // todo... да заменя тестовото id с оригинално от клърк
+        clerkId: "test_id",
         email: formData.email,
         firstName: formData.firstName,
         secondName: formData.secondName,
@@ -66,13 +68,15 @@ export default function SyncUser() {
         organizationName: formData.organizationName,
         role: "user"
       });
+    } else {
+      alert("Faild to create user");
     }
   }
 
   if (!isLoaded || isFetchingUser) {
     return (
-      <div className="flex justify-center py-10">
-        <Loader2 className="animate-spin w-6 h-6" />
+      <div className="flex justify-center items-center py-10">
+        <Loader/>
       </div>
     )
   }
@@ -87,7 +91,6 @@ export default function SyncUser() {
         </CardHeader>
 
         <CardContent>
-            // If no user exists → show form
           <form onSubmit={onSubmitNewUser} className="space-y-5">
             {/* First Name */}
             <div className="flex flex-col space-y-1">
@@ -145,7 +148,7 @@ export default function SyncUser() {
                 placeholder="Enter Organisation"
                 value={formData.organizationName}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  setFormData((prev) => ({ ...prev, organizationName: e.target.value }))
                 }
               />
             </div>
