@@ -54,14 +54,14 @@ export default function ordersList() {
   const user = useAppStore((state) => state.user);
   const shipment = useAppStore((state) => state.shipments);
   const setShipments = useAppStore((state) => state.setShipments);
-  useShipmentsSync({ organizationName: "test organization" });
 
-  
+
   const { data } = trpc.shipment.getAllShipments.useQuery(
     { organizationName: user?.organizationName || "" },
     { enabled: !!user }
   );
-  
+  useShipmentsSync({ organizationName: "test organization" });
+
   useEffect(() => {
     if (data) {
       setShipments(data);
@@ -69,147 +69,147 @@ export default function ordersList() {
       setShipments([]);
     }
   }, [data])
-  
+
   console.log(shipment);
 
+  const columns: ColumnDef<typeof shipment[0]>[] = [
+    {
+      accessorKey: "orderNumber",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="cursor-pointer"
+        >
+          Order Number
+          <ArrowUpDown />
+        </Button>
+      ),
+      cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
+    },
+
+    {
+      accessorKey: "clientName",
+      header: "Client Name",
+      cell: ({ row }) => <div>{row.getValue("clientName")}</div>,
+    },
+
+    {
+      accessorKey: "deliveryAddress",
+      header: "Delivery Address",
+      cell: ({ row }) => <div>{row.getValue("deliveryAddress")}</div>,
+    },
+
+    {
+      accessorKey: "deliveryDay",
+      header: "Delivery Day",
+      cell: ({ row }) => <div>{row.getValue("deliveryDay")}</div>,
+    },
+
+    {
+      accessorKey: "actualDeliveryDay",
+      header: "Actual Delivery Day",
+      cell: ({ row }) => <div>{row.getValue("actualDeliveryDay") || "-"}</div>,
+    },
+
+    {
+      accessorKey: "deliveryTime",
+      header: "Delivery Time",
+      cell: ({ row }) => <div>{row.getValue("deliveryTime") || "-"}</div>,
+    },
+
+    {
+      accessorKey: "phone",
+      header: "Phone",
+      cell: ({ row }) => <div>{row.getValue("phone")}</div>,
+    },
+
+    {
+      accessorKey: "gpsCoordinates",
+      header: "GPS",
+      cell: ({ row }) => <div>{row.getValue("gpsCoordinates") || "-"}</div>,
+    },
+
+    {
+      accessorKey: "recipientName",
+      header: "Recipient",
+      cell: ({ row }) => <div>{row.getValue("recipientName") || "-"}</div>,
+    },
+
+    {
+      accessorKey: "truckNumber",
+      header: "Truck Number",
+      cell: ({ row }) => <Select>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Truck number" />
+        </SelectTrigger>
+        <SelectContent>
+          {/* Todo... to add all trucks */}
+          <SelectItem value="light">Light</SelectItem>
+          <SelectItem value="dark">Dark</SelectItem>
+          <SelectItem value="system">System</SelectItem>
+        </SelectContent>
+      </Select>,
+    },
+
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("status")}</div>
+      ),
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const orderN = row.original
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(orderN.orderNumber)}
+              >
+                Copy Order N
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
+              {/* To do ... to add more actions(like "eddit") */}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
+  const table = useReactTable({
+    data: shipment,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  })
+
   if (shipment) {
-
-    const columns: ColumnDef<typeof data[0]>[] = [
-      {
-        accessorKey: "orderNumber",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="cursor-pointer"
-          >
-            Order Number
-            <ArrowUpDown />
-          </Button>
-        ),
-        cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
-      },
-
-      {
-        accessorKey: "clientName",
-        header: "Client Name",
-        cell: ({ row }) => <div>{row.getValue("clientName")}</div>,
-      },
-
-      {
-        accessorKey: "deliveryAddress",
-        header: "Delivery Address",
-        cell: ({ row }) => <div>{row.getValue("deliveryAddress")}</div>,
-      },
-
-      {
-        accessorKey: "deliveryDay",
-        header: "Delivery Day",
-        cell: ({ row }) => <div>{row.getValue("deliveryDay")}</div>,
-      },
-
-      {
-        accessorKey: "actualDeliveryDay",
-        header: "Actual Delivery Day",
-        cell: ({ row }) => <div>{row.getValue("actualDeliveryDay") || "-"}</div>,
-      },
-
-      {
-        accessorKey: "deliveryTime",
-        header: "Delivery Time",
-        cell: ({ row }) => <div>{row.getValue("deliveryTime") || "-"}</div>,
-      },
-
-      {
-        accessorKey: "phone",
-        header: "Phone",
-        cell: ({ row }) => <div>{row.getValue("phone")}</div>,
-      },
-
-      {
-        accessorKey: "gpsCoordinates",
-        header: "GPS",
-        cell: ({ row }) => <div>{row.getValue("gpsCoordinates") || "-"}</div>,
-      },
-
-      {
-        accessorKey: "recipientName",
-        header: "Recipient",
-        cell: ({ row }) => <div>{row.getValue("recipientName") || "-"}</div>,
-      },
-
-      {
-        accessorKey: "truckNumber",
-        header: "Truck Number",
-        cell: ({ row }) => <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Truck number" />
-          </SelectTrigger>
-          <SelectContent>
-            {/* Todo... to add all trucks */}
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
-          </SelectContent>
-        </Select>,
-      },
-
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-          <div className="capitalize">{row.getValue("status")}</div>
-        ),
-      },
-      {
-        id: "actions",
-        enableHiding: false,
-        cell: ({ row }) => {
-          const orderN = row.original
-
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(orderN.orderNumber)}
-                >
-                  Copy Order N
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
-                {/* To do ... to add more actions(like "eddit") */}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )
-        },
-      },
-    ]
-
-    const table = useReactTable({
-      data: shipment,
-      columns,
-      onSortingChange: setSorting,
-      onColumnFiltersChange: setColumnFilters,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-      getSortedRowModel: getSortedRowModel(),
-      getFilteredRowModel: getFilteredRowModel(),
-      onColumnVisibilityChange: setColumnVisibility,
-      onRowSelectionChange: setRowSelection,
-      state: {
-        sorting,
-        columnFilters,
-        columnVisibility,
-        rowSelection,
-      },
-    })
 
     return (
       <div className="w-full">
@@ -257,21 +257,21 @@ export default function ordersList() {
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id}>
+                      <TableCell key={header.id}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                      </TableHead>
+                      </TableCell>
                     )
                   })}
                 </TableRow>
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length && (
+              {table.getRowModel().rows?.length > 0 && (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
@@ -299,7 +299,7 @@ export default function ordersList() {
         <TableBody>
           <TableRow>
             <TableCell className="h-24 text-center">
-              <span className="text-3xl font-bold">No Orders</span>
+              No Orders
             </TableCell>
           </TableRow>
         </TableBody>

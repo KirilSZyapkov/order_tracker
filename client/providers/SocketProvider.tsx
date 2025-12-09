@@ -12,9 +12,13 @@ export default function SocketProvider({ children }: { children: React.ReactNode
       transports: ['websocket'],
     });
 
-    socket.on("shipment:update", (payload) => {
-      updateShipment(payload)
-    })
+    socket.on("shipment:update", (shipment) => {
+      updateShipment(shipment.id, shipment)
+    });
+
+    return ()=>{
+      socket.disconnect();
+    }
   }, [updateShipment])
 
   return <>{children}</>;

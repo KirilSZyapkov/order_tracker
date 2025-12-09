@@ -148,7 +148,7 @@ export const shipmentRouter = router({
           where: { id },
           data: updateData
         });
-        ctx.io?.emit('shipmentUpdated', updatedShipment);
+        ctx.io?.emit('shipment:update', updatedShipment);
         return updatedShipment;
 
       } catch (e: unknown) {

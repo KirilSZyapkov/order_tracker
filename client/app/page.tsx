@@ -69,107 +69,100 @@ export default function SyncUser() {
     }
   }
 
+  if (!isLoaded || isFetchingUser) {
+    return (
+      <div className="flex justify-center py-10">
+        <Loader2 className="animate-spin w-6 h-6" />
+      </div>
+    )
+  }
+
   return (
     <section className="flex justify-center items-center mt-10 px-4 h-screen">
       <Card className="w-full max-w-md shadow-lg border rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-center">
-            {currentUser?.firstName ? "User Information" : "Create New User"}
+            "Create New User"
           </CardTitle>
         </CardHeader>
 
         <CardContent>
-          {!isLoaded || isFetchingUser ? (
-            <div className="flex justify-center py-10">
-              <Loader2 className="animate-spin w-6 h-6" />
-            </div>
-          ) : currentUser?.id ? (
-            // If user exists, show basic info
-            <div className="space-y-2 text-center">
-              <p className="text-sm text-muted-foreground">
-                You are already synced.
-              </p>
-              <p className="font-medium">{currentUser.firstName}</p>
-              <p className="text-muted-foreground">{currentUser.email}</p>
-            </div>
-          ) : (
             // If no user exists → show form
-            <form onSubmit={onSubmitNewUser} className="space-y-5">
-              {/* First Name */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium">First Name</label>
-                <Input
-                  placeholder="Enter your first name"
-                  value={formData.firstName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, firstName: e.target.value }))
-                  }
-                />
-              </div>
-              {/* Second Name */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium">Second Name</label>
-                <Input
-                  placeholder="Enter your second name"
-                  value={formData.secondName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, secondName: e.target.value }))
-                  }
-                />
-              </div>
+          <form onSubmit={onSubmitNewUser} className="space-y-5">
+            {/* First Name */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-sm font-medium">First Name</label>
+              <Input
+                placeholder="Enter your first name"
+                value={formData.firstName}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, firstName: e.target.value }))
+                }
+              />
+            </div>
+            {/* Second Name */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-sm font-medium">Second Name</label>
+              <Input
+                placeholder="Enter your second name"
+                value={formData.secondName}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, secondName: e.target.value }))
+                }
+              />
+            </div>
 
-              {/* Email */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium">Email</label>
-                <Input
-                  placeholder="Enter your email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, email: e.target.value }))
-                  }
-                />
-              </div>
+            {/* Email */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-sm font-medium">Email</label>
+              <Input
+                placeholder="Enter your email"
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
+              />
+            </div>
 
-              {/* Phone */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium">Phone</label>
-                <Input
-                  placeholder="Enter your phone"
-                  type="number"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, phone: e.target.value }))
-                  }
-                />
-              </div>
+            {/* Phone */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-sm font-medium">Phone</label>
+              <Input
+                placeholder="Enter your phone"
+                type="number"
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                }
+              />
+            </div>
 
-              {/* Organisation */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium">Organisation</label>
-                <Input
-                  placeholder="Enter Organisation"
-                  value={formData.organizationName}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, name: e.target.value }))
-                  }
-                />
-              </div>
+            {/* Organisation */}
+            <div className="flex flex-col space-y-1">
+              <label className="text-sm font-medium">Organisation</label>
+              <Input
+                placeholder="Enter Organisation"
+                value={formData.organizationName}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
+              />
+            </div>
 
-              {/* Submit button */}
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={createUser.isPending}
-              >
-                {createUser.isPending ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  "Create User"
-                )}
-              </Button>
-            </form>
-          )}
+            {/* Submit button */}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={createUser.isPending}
+            >
+              {createUser.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Create User"
+              )}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </section>
