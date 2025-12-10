@@ -19,12 +19,17 @@ export default function DriverPage() {
   const [selected, setSelected] = useState<ShipmentType | null>(null);
   const { confirm } = useConfirmDelivery();
 
-  if(shipments.lenght === 0){
+  if(shipments.length === 0){
     return (
       <div>
         <p>No shipments for delivery</p>
       </div>
     )
+  }
+
+  async function onConfirmDelivery(shipment: ShipmentType) {
+    const id = shipment.id;
+    confirm(id, shipment);
   }
 
   return (
@@ -34,11 +39,11 @@ export default function DriverPage() {
 
       <div className="space-y-3">
         {shipments.map(s => (
-          <ShipmentCard key={s.id} shipment={s} onClick={() => setSelected(s)} />
+          <ShipmentCard key={s.id} shipment={s} onClick={()=>onConfirmDelivery(s)} />
         ))}
       </div>
-
-      <ConfirmDialog open={!!selected} title="Mark as delivered?" onConfirm={() => { confirm(selected.id, selected); setSelected(null); }} onCancel={() => setSelected(null)} />
+{/* Todo: за бъдещо доразвитие. Да се добави записване името на получателя в диалог прозореца onClick={() => setSelected(s)}*/}
+      {/* <ConfirmDialog open={!!selected} title="Mark as delivered?" onConfirm={() => { confirm(selected.id, selected); setSelected(null); }} onCancel={() => setSelected(null)} /> */}
     </main>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+// Todo: да коригирам компонента, като добавя ред за попъване имената на получателя
+
 import { Button } from "@/components/ui/button";
 
 export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: boolean; onConfirm: ()=>void; onCancel: ()=>void; title?: string }) {

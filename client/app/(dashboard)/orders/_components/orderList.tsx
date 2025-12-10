@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/select"
 import { useAppStore } from "@/store/store";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
+import { trpc } from "@/utils/trpc";
 
 export default function ordersList() {
 
@@ -51,15 +52,51 @@ export default function ordersList() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const user = useAppStore((state) => state.user);
-  const shipment = useAppStore((state) => state.shipments);
+  const shipments = useAppStore((state) => state.shipments);
+  const setTrucks = useAppStore((state)=> state.setTrucks);
+  const updateShipment = useAppStore((state)=> state.updateShipment);
+  const trucks = useAppStore((state)=> state.trucks);
+  const ctx = trpc.useContext();
+
+  const {data} = trpc.truck.getAllTrucks.useQuery(
+    {organizationName: user?.organizationName || ""}, 
+    {enabled: Boolean(user?.organizationName)},
+  );
+
+  const updateShipmentMutation = trpc.shipment.updateShipmentById.useMutation({
+    onSuccess: () => {
+      toast.success("Truck updated");
+      ctx.shipment.getAll.invalidate();
+    },
+      onError: () => {
+        toast.error("Update failed — reverting");
+        ctx.shipment.getAll.invalidate();
+      },
+  })
+
+  useEffect(()=>{
+    if(data) setTrucks(data);
+  },[data]);
 
   console.log(user);
   
-  useShipmentsSync({ organizationName: "test organization" });
+  useShipmentsSync({ organizationName: user?.organizationName || "" });
 
-  console.log(shipment);
+  console.log(shipments);
 
-  const columns: ColumnDef<typeof shipment[0]>[] = [
+  async function handleTruckAssign(id: string, truckNumber: string, organizationName: string) {
+    const truck = trucks.find(t=> (t.truckNumber === truckNumber && t.organizationName === organizationName));
+    if(!truck) return;
+    updateShipment(id, {truck.id, truckNumber});
+
+    updateShipmentMutation.mutate({
+      id,
+      truckNumber,
+      truckId
+    })
+  }
+
+  const columns: ColumnDef<typeof shipments[0]>[] = [
     {
       accessorKey: "orderNumber",
       header: ({ column }) => (
@@ -126,17 +163,25 @@ export default function ordersList() {
     {
       accessorKey: "truckNumber",
       header: "Truck Number",
-      cell: ({ row }) => <Select>
+      cell: ({ row }) => 
+        const shipment = row.original;
+       return (
+        <Select
+        value={shipment.truckNumber || ""}
+        onValueChange={(value: string)=> handleTruckAssign(shipment.id, value, shipment.organizationName)}
+        >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Truck number" />
         </SelectTrigger>
         <SelectContent>
-          {/* Todo... to add all trucks */}
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
+          {trucks.map(t=>(
+            <SelectItem key={t.id} value={t.truckNumber}>
+                {t.truckNumber}
+            </SelectItem>
+          ))}
         </SelectContent>
-      </Select>,
+      </Select>
+      )
     },
 
     {
@@ -178,7 +223,7 @@ export default function ordersList() {
   ]
 
   const table = useReactTable({
-    data: shipment,
+    data: shipments,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -196,7 +241,7 @@ export default function ordersList() {
     },
   })
 
-  if (shipment) {
+  if (shipments) {
 
     return (
       <div className="w-full">
