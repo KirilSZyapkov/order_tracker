@@ -41,18 +41,18 @@ export default function RootLayout({
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <ClerkProvider>
         <QueryClientProvider client={queryClient}>
-          <UserSyncWrapper>
-            <html lang="en">
-              <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
-              >
+          <html lang="en">
+            <body
+              className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
+            >
+              <UserSyncWrapper>
                 <SocketProvider>
                   {children}
                 </SocketProvider>
-                <Toaster />
-              </body>
-            </html>
-          </UserSyncWrapper>
+              </UserSyncWrapper>
+              <Toaster />
+            </body>
+          </html>
         </QueryClientProvider>
       </ClerkProvider>
     </trpc.Provider>

@@ -35,6 +35,7 @@ export default function SyncUser() {
     enabled: isSignedIn && !!user,
   });
 
+
   // Mutation: create user
   const createUser = trpc.user.createNewUser.useMutation({
     onSuccess: async (newUser) => {
@@ -46,8 +47,8 @@ export default function SyncUser() {
       toast.error("❌ Failed to create user.");
     },
   });
-
-  if (currentUser && user) return router.push("/dashboard"); // No need to show the form if user is already synced
+// Todo... да върна user от клърк в if проверката!
+  if (currentUser) return router.push("/dashboard"); // No need to show the form if user is already synced
 
   // Handle form submission
   async function onSubmitNewUser(e: React.FormEvent) {

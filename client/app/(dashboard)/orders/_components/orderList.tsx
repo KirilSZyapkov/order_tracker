@@ -44,6 +44,7 @@ import {
 import { useAppStore } from "@/store/store";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 import { trpc } from "@/utils/trpc";
+import { toast } from "sonner";
 
 export default function ordersList() {
 
@@ -53,46 +54,46 @@ export default function ordersList() {
   const [rowSelection, setRowSelection] = useState({});
   const user = useAppStore((state) => state.user);
   const shipments = useAppStore((state) => state.shipments);
-  const setTrucks = useAppStore((state)=> state.setTrucks);
-  const updateShipment = useAppStore((state)=> state.updateShipment);
-  const trucks = useAppStore((state)=> state.trucks);
+  const setTrucks = useAppStore((state) => state.setTrucks);
+  const updateShipment = useAppStore((state) => state.updateShipment);
+  const trucks = useAppStore((state) => state.trucks);
   const ctx = trpc.useContext();
 
-  const {data} = trpc.truck.getAllTrucks.useQuery(
-    {organizationName: user?.organizationName || ""}, 
-    {enabled: Boolean(user?.organizationName)},
+  const { data } = trpc.truck.getAllTrucks.useQuery(
+    { organizationName: user?.organizationName || "" },
+    { enabled: Boolean(user?.organizationName) },
   );
 
   const updateShipmentMutation = trpc.shipment.updateShipmentById.useMutation({
     onSuccess: () => {
       toast.success("Truck updated");
-      ctx.shipment.getAll.invalidate();
+      ctx.shipment.getAllShipments.invalidate();
     },
-      onError: () => {
-        toast.error("Update failed — reverting");
-        ctx.shipment.getAll.invalidate();
-      },
+    onError: () => {
+      toast.error("Update failed — reverting");
+      ctx.shipment.getAllShipments.invalidate();
+    },
   })
 
-  useEffect(()=>{
-    if(data) setTrucks(data);
-  },[data]);
+  useEffect(() => {
+    if (data) setTrucks(data);
+  }, [data]);
 
   console.log(user);
-  
+
   useShipmentsSync({ organizationName: user?.organizationName || "" });
 
   console.log(shipments);
 
   async function handleTruckAssign(id: string, truckNumber: string, organizationName: string) {
-    const truck = trucks.find(t=> (t.truckNumber === truckNumber && t.organizationName === organizationName));
-    if(!truck) return;
-    updateShipment(id, {truckId:truck.id, truckNumber});
+    const truck = trucks.find(t => (t.plateNumber === truckNumber && t.organizationName === organizationName));
+    if (!truck) return;
+    updateShipment(id, { truckId: truck.id, truckNumber });
 
     updateShipmentMutation.mutate({
       id,
       truckNumber,
-      truckId:truck.id,
+      truckId: truck.id,
       status: "inTransit",
       updatedAt: new Date().toISOString(),
     })
@@ -165,25 +166,26 @@ export default function ordersList() {
     {
       accessorKey: "truckNumber",
       header: "Truck Number",
-      cell: ({ row }) => 
+      cell: ({ row }) => {
         const shipment = row.original;
-       return (
-        <Select
-        value={shipment.truckNumber || ""}
-        onValueChange={(value: string)=> handleTruckAssign(shipment.id, value, shipment.organizationName)}
-        >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Truck number" />
-        </SelectTrigger>
-        <SelectContent>
-          {trucks.map(t=>(
-            <SelectItem key={t.id} value={t.truckNumber}>
-                {t.truckNumber}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      )
+        return (
+          <Select
+            value={shipment.truckNumber || ""}
+            onValueChange={(value: string) => handleTruckAssign(shipment.id, value, shipment.organizationName)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Truck number" />
+            </SelectTrigger>
+            <SelectContent>
+              {trucks.map(t => (
+                <SelectItem key={t.id} value={t.plateNumber}>
+                  {t.plateNumber}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )
+      }
     },
 
     {

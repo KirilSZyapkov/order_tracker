@@ -10,6 +10,8 @@ export function useUserSync() {
 
   const { data, isError, isLoading, refetch } = trpc.user.getUserById.useQuery(undefined, { enabled: true });
 
+    console.log("useUserSync",data);
+    
   useEffect(() => {
     if (data) {
       setUser(data);
