@@ -2,8 +2,8 @@ import React from "react";
 
 export default function TruckListLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
+    <section className="container flex flex-col m-auto gap-5">
       {children}
-    </div>
+    </section>
   )
 }

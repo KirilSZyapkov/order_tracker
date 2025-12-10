@@ -1,20 +1,24 @@
 "use client";
-// да адаптирам с Шадсиен Card
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShipmentType } from "@/types/shipmentType";
 
-
-export function ShipmentCard({ shipment, onClick }: { shipment: any; onClick?: () => void }) {
+export function ShipmentCard({ shipment, onClick }: { shipment: ShipmentType; onClick?: () => void }) {
   return (
-    <article className="p-4 rounded-xl shadow-sm border cursor-pointer" onClick={onClick}>
+    <Card className="p-4 rounded-xl shadow-sm border cursor-pointer" onClick={onClick}>
+      <CardHeader>
       <div className="flex justify-between">
         <div>
-          <h3 className="text-sm font-semibold">{shipment.clientName}</h3>
+          <CardTitle><h3 className="text-sm font-semibold">{shipment.clientName}</h3></CardTitle>
           <p className="text-xs text-muted-foreground">{shipment.deliveryAddress}</p>
         </div>
+      </CardHeader>
+      <CardContent>
         <div className="text-right">
           <p className="text-xs">{shipment.phone}</p>
           <p className="text-xs text-muted-foreground">{shipment.loadingDay ?? ""}</p>
         </div>
       </div>
-    </article>
+      </CardContent>
+    </Card>
   );
 }

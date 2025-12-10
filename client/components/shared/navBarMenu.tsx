@@ -24,7 +24,7 @@ export default function NavBarMenu() {
             <Truck /> <span className="text-xl">Trucks</span>
           </Link>
           {/* For Admins */}
-          {curUser?.role !== "admin" &&
+          {curUser?.role === "admin" &&
             <><Link href="/dashboard" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
               <LayoutDashboard /> <span className="text-xl">Dashboard</span>
             </Link>
@@ -62,12 +62,14 @@ export default function NavBarMenu() {
                 <Truck /> <span className="text-xl">Trucks</span>
               </Link>
               {/* For Admins */}
-              <Link onClick={() => setOpen(false)} href="/dashboard" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
-                <LayoutDashboard /> <span className="text-xl">Dashboard</span>
-              </Link>
-              <Link onClick={() => setOpen(false)} href="/users" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
-                <UsersRound /> <span className="text-xl">Users</span>
-              </Link>
+              {curUser?.role === "admin" &&
+                <><Link onClick={()=>setOpen(false)} href="/dashboard" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
+                  <LayoutDashboard /> <span className="text-xl">Dashboard</span>
+                </Link>
+                  <Link onClick={()=>setOpen(false)} href="/users" className="text-gray-700 hover:text-gray-400 transition-colors flex items-center gap-2">
+                    <UsersRound /> <span className="text-xl">Users</span>
+                  </Link></>
+              }
 
               <SignedIn>
                 <UserButton
