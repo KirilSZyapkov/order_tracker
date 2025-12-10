@@ -16,7 +16,7 @@ export default function DriverPage() {
   useShipmentsSync(params);
 
   const shipments = useAppStore((s) => s.shipments);
-  const [selected, setSelected] = useState<ShipmentType | null>(null);
+  // const [selected, setSelected] = useState<ShipmentType | null>(null);
   const { confirm } = useConfirmDelivery();
 
   if(shipments.length === 0){
@@ -29,7 +29,12 @@ export default function DriverPage() {
 
   async function onConfirmDelivery(shipment: ShipmentType) {
     const id = shipment.id;
-    confirm(id, shipment);
+  
+    const data = {
+      status: "delivered",
+      updatedAt: new Date().toISOString(),
+    }
+    confirm(id, data);
   }
 
   return (

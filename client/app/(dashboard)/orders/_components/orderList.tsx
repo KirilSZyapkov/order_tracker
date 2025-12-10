@@ -87,12 +87,14 @@ export default function ordersList() {
   async function handleTruckAssign(id: string, truckNumber: string, organizationName: string) {
     const truck = trucks.find(t=> (t.truckNumber === truckNumber && t.organizationName === organizationName));
     if(!truck) return;
-    updateShipment(id, {truck.id, truckNumber});
+    updateShipment(id, {truckId:truck.id, truckNumber});
 
     updateShipmentMutation.mutate({
       id,
       truckNumber,
-      truckId
+      truckId:truck.id,
+      status: "inTransit",
+      updatedAt: new Date().toISOString(),
     })
   }
 
