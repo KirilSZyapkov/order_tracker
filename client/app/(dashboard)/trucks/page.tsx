@@ -5,8 +5,7 @@ import TruckList from "./_components/truckList";
 export default function TrucksPage() {
   
   return (
-    <section>
-      <h2>Trucks Page</h2>
+    <section className="px-5">
       <AddTruckForm />
       <Separator className="my-5"/>
       <TruckList/>
