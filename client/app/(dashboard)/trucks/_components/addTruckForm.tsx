@@ -15,8 +15,9 @@ export default function addTruckForm() {
   });
 
   const addTruck = useAppStore((state) => state.addTruck);
+  const user = useAppStore((state)=> state.user)
 
-  const createShipment = trpc.truck.createNewTruck.useMutation({
+  const createTruck = trpc.truck.createNewTruck.useMutation({
     onSuccess: async (newTruck) => {
       toast.success("Truck created successfully");
       addTruck(newTruck);
@@ -28,7 +29,16 @@ export default function addTruckForm() {
 
   async function onSubmintNewShipment(e: React.FormEvent) {
     e.preventDefault();
-    console.log(e);
+    
+    if(!formData.plateNumber) {
+      toast.error("Please enter truck plates");
+      return;
+    };
+
+    createTruck.mutate({
+      plateNumber: formData.plateNumber,
+      organizationName: user.organizationName,
+    })
 
   }
   return (

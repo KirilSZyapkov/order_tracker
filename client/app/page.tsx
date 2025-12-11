@@ -49,7 +49,7 @@ export default function SyncUser() {
   });
   useEffect(() => {
     // Todo... да върна user от клърк в if проверката!
-    if (currentUser) return router.push("/dashboard"); // No need to show the form if user is already synced
+    if (currentUser) return router.push("/orders"); // No need to show the form if user is already synced
   }, [currentUser, router]);
 
   // Handle form submission
