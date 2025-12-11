@@ -1,6 +1,16 @@
 "use client";
 
-export default function truckShipmentCard({ shipment, onClick }: { shipment: any; onClick?: () => void }) {
+export default function truckShipmentCard() {
+  function onClick() {
+
+  };
+
+  const shipment = {
+    clientName: "",
+    deliveryAddress: "",
+    phone:"",
+    loadingDay:""
+  }
   return (
     <article className="p-4 rounded-xl shadow-sm border cursor-pointer" onClick={onClick}>
       <div className="flex justify-between">

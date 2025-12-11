@@ -9,7 +9,7 @@ export default function TrucksPage() {
       <h2>Trucks Page</h2>
       <AddTruckForm />
       <Separator/>
-      <TruckShipmentCard shipment={shipment} onClick={onClick}/>
+      <TruckShipmentCard/>
     </section>
   )
 }
