@@ -45,11 +45,11 @@ export default function RootLayout({
             <body
               className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
             >
-              <UserSyncWrapper>
-                <SocketProvider>
+              <SocketProvider>
+                <UserSyncWrapper>
                   {children}
-                </SocketProvider>
-              </UserSyncWrapper>
+                </UserSyncWrapper>
+              </SocketProvider>
               <Toaster />
             </body>
           </html>

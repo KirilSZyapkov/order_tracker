@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "@/store/store";
 import Loader from "@/components/shared/Loader";
 
@@ -47,8 +47,10 @@ export default function SyncUser() {
       toast.error("❌ Failed to create user.");
     },
   });
-// Todo... да върна user от клърк в if проверката!
-  if (currentUser) return router.push("/dashboard"); // No need to show the form if user is already synced
+  useEffect(() => {
+    // Todo... да върна user от клърк в if проверката!
+    if (currentUser) return router.push("/dashboard"); // No need to show the form if user is already synced
+  }, [currentUser, router]);
 
   // Handle form submission
   async function onSubmitNewUser(e: React.FormEvent) {
@@ -72,15 +74,23 @@ export default function SyncUser() {
     } else {
       alert("Faild to create user");
     }
-  }
+  };
 
   if (!isLoaded || isFetchingUser) {
     return (
       <div className="flex justify-center items-center py-10">
-        <Loader/>
+        <Loader />
       </div>
     )
-  }
+  };
+
+  if (currentUser) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader />
+      </div>
+    );
+  };
 
   return (
     <section className="flex justify-center items-center mt-10 px-4 h-screen">
