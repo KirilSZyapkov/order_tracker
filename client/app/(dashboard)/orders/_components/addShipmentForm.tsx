@@ -25,6 +25,8 @@ export default function addShipmentForm() {
   const addShipments = useAppStore((state) => state.addShipment);
   const user = useAppStore((state) => state.user);
 
+  console.log("orders", user);
+  
 
   const createShipment = trpc.shipment.createNewShipment.useMutation({
     onSuccess: async (newShipments) => {
@@ -40,7 +42,7 @@ export default function addShipmentForm() {
   async function onSubmintNewShipment(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!formData.clientName || !formData.deliveryAddress || !formData.orderNumber || !formData.deliveryDay || !formData.phone || user) {
+    if (!formData.clientName || !formData.deliveryAddress || !formData.orderNumber || !formData.deliveryDay || !formData.phone || !user) {
       toast.error("Please fill out all fields.");
       return;
     };
