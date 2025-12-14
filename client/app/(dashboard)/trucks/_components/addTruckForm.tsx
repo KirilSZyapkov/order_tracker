@@ -37,7 +37,7 @@ export default function addTruckForm() {
 
     createTruck.mutate({
       plateNumber: formData.plateNumber,
-      organizationName: user.organizationName,
+      organizationName: user?.organizationName || "",
     })
 
   }
@@ -70,9 +70,9 @@ export default function addTruckForm() {
       <Button
         type="submit"
         className="w-full rounded-lg py-3 text-base font-semibold"
-        disabled={createShipment.isPending}
+        disabled={createTruck.isPending}
       >
-        {createShipment.isPending ? (
+        {createTruck.isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           "Create Shipment"
