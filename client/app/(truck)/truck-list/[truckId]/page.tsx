@@ -9,7 +9,7 @@ import { ConfirmDialog } from "@/components/shared/confirmDialog";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 import { ShipmentType } from "@/types/shipmentType";
 
-
+// Todo: да оправя изчистването на пратката от списъка след потвърждаване на доставка
 export default function DriverPage() {
 
   const params = useParams();
