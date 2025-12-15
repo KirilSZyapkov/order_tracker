@@ -103,6 +103,7 @@ export const shipmentRouter = router({
       //   });
       // };
       try {
+        // Todo: да оправя данните, които подавам към базата данни
         const newCreatedShipment = await ctx.db.shipment.create({
           data: {
             orderNumber: input.orderNumber,
