@@ -16,7 +16,7 @@ export function ShipmentCard({ shipment, onClick }: { shipment: ShipmentType; on
       <CardContent>
         <div className="text-right">
           <p className="text-xs">{shipment.phone}</p>
-          <p className="text-xs text-muted-foreground">{shipment.loadingDay ?? ""}</p>
+          <p className="text-xs text-muted-foreground">{shipment.deliveryDay ?? ""}</p>
         </div>
       </CardContent>
     </Card>

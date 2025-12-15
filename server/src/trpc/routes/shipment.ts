@@ -20,7 +20,7 @@ export const shipmentRouter = router({
       const shipments = await ctx.db.shipment.findMany({
         where: { organizationName }
       });
-      if (shipments.length === 0) {
+      if (shipments.length === 0 || !shipments) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'No shipments found',

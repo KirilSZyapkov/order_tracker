@@ -5,6 +5,7 @@ import { useAppStore } from "@/store/store";
 import { trpc } from "@/utils/trpc";
 import { Card, CardContent } from "@/components/ui/card";
 import { Files } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger, } from "@/components/ui/tooltip"
 
 export default function truckList() {
   const user = useAppStore((state) => state.user);
@@ -33,11 +34,16 @@ export default function truckList() {
         ? <div>
           {trucks.map(t => (
             <Card key={t.id}>
-              <CardContent className="flex justify-between items-center px-3">
+              <CardContent className="flex justify-between items-center px-10">
                 <div>{t.plateNumber}</div>
-                <div>
-                  <Files className="cursor-pointer" onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}/truck-list/${t.id}`)}/>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Files className="cursor-pointer" onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/truck-list/${t.id}`)} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Copy truck link</p>
+                  </TooltipContent>
+                </Tooltip>
               </CardContent>
             </Card>
           ))}

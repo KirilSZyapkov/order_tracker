@@ -23,7 +23,7 @@ export default function addTruckForm() {
       addTruck(newTruck);
     },
     onError: () => {
-      toast.error("❌ Failed to create user.");
+      toast.error("❌ Failed to create truck.");
     },
   })
 

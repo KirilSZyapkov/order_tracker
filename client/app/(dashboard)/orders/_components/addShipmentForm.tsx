@@ -46,11 +46,11 @@ export default function addShipmentForm() {
       toast.error("Please fill out all fields.");
       return;
     };
-    // Todo... да премахна фиктивните id и organizationName
+   
     createShipment.mutate({
       ...formData,
-      autherId: "testId",
-      organizationName: "test organization",
+      autherId: user.id,
+      organizationName: user.organizationName,
       truckId: "",
       truckNumber: "",
       actualDeliveryDay: "",

@@ -45,6 +45,7 @@ import { useAppStore } from "@/store/store";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 import { trpc } from "@/utils/trpc";
 import { toast } from "sonner";
+import Loader from "@/components/shared/Loader";
 
 export default function ordersList() {
 
@@ -59,7 +60,7 @@ export default function ordersList() {
   const trucks = useAppStore((state) => state.trucks);
   const ctx = trpc.useContext();
 
-  const { data } = trpc.truck.getAllTrucks.useQuery(
+  const { data, isLoading, isError } = trpc.truck.getAllTrucks.useQuery(
     { organizationName: user?.organizationName || "" },
     { enabled: Boolean(user?.organizationName) },
   );
@@ -79,11 +80,7 @@ export default function ordersList() {
     if (data) setTrucks(data);
   }, [data]);
 
-  console.log(user);
-
   useShipmentsSync({ organizationName: user?.organizationName || "" });
-
-  console.log(shipments);
 
   async function handleTruckAssign(id: string, truckNumber: string, organizationName: string) {
     const truck = trucks.find(t => (t.plateNumber === truckNumber && t.organizationName === organizationName));
@@ -97,7 +94,7 @@ export default function ordersList() {
       status: "inTransit",
       updatedAt: new Date().toISOString(),
     })
-  }
+  };
 
   const columns: ColumnDef<typeof shipments[0]>[] = [
     {
@@ -224,7 +221,7 @@ export default function ordersList() {
         )
       },
     },
-  ]
+  ];
 
   const table = useReactTable({
     data: shipments,
@@ -243,9 +240,9 @@ export default function ordersList() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
-  if (shipments) {
+  if (shipments.length > 0) {
 
     return (
       <div className="w-full">
@@ -335,7 +332,7 @@ export default function ordersList() {
         <TableBody>
           <TableRow>
             <TableCell className="h-24 text-center">
-              No Orders
+              {isLoading ? <Loader /> : <p className="text-2xl font-semibold text-gray-800 text-center mb-4">No Orders found</p>}
             </TableCell>
           </TableRow>
         </TableBody>

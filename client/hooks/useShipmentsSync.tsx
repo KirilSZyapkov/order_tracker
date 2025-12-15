@@ -20,7 +20,7 @@ export function useShipmentsSync(opts?: { truckId?: string, organizationName?: s
     } else {
       setShipments([]);
     }
-  }, [data, setShipments]);
+  }, [data, setShipments]);  
 
   useEffect(() => {
     if (isError) {
