@@ -3,12 +3,14 @@
 import { useEffect } from "react";
 import { useAppStore } from "@/store/store";
 import { trpc } from "@/utils/trpc";
-
+import { Card, CardContent } from "@/components/ui/card";
+import { Files } from 'lucide-react';
 
 export default function truckList() {
   const user = useAppStore((state) => state.user);
   const trucks = useAppStore((state) => state.trucks);
   const setTruck = useAppStore((state) => state.setTrucks);
+
 
   // Todo... да проверя за логнат юзър, ако няма да редиректна към логин форма!
 
@@ -21,17 +23,26 @@ export default function truckList() {
     if (data) {
       setTruck(data);
     };
-  }, [data])
+  }, [data]);
+
+  // Todo: да доразвия картичката. Да се изписва име на превозвача и контакти
 
   return (
     <>
       {trucks.length > 0
         ? <div>
           {trucks.map(t => (
-            <div key={t.id}>{t.plateNumber}</div>
+            <Card key={t.id}>
+              <CardContent className="flex justify-between items-center px-3">
+                <div>{t.plateNumber}</div>
+                <div>
+                  <Files className="cursor-pointer" onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}/truck-list/${t.id}`)}/>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div >
-        : (<div>No trucks were found.</div>)
+        : (<h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">No trucks were found.</h2>)
       }
     </>
   );

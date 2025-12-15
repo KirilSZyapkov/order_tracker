@@ -40,7 +40,9 @@ export default function addTruckForm() {
       organizationName: user?.organizationName || "",
     })
 
-  }
+  };
+
+  // Todo: Да доразвия формата. Да добавя име на превозвача и контакти.
   return (
     <form
       onSubmit={onSubmintNewShipment}
