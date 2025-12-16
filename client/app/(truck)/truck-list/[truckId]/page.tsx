@@ -40,7 +40,7 @@ export default function DriverPage() {
   return (
     // да адаптирам с Шадцсиен Card
     <main className="p-4">
-      <h1 className="text-xl font-bold mb-4">Дeliveries</h1>
+      <h1 className="text-xl font-bold mb-4">Deliveries</h1>
 
       <div className="space-y-3">
         {shipments.map(s => (

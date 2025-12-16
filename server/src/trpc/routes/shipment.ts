@@ -64,7 +64,7 @@ export const shipmentRouter = router({
       };
     }),
   getAssignedShipmentByTruckId: publicProcedure
-    .input(z.object({ truckId: z.string() }))
+    .input(z.object({ truckId: z.string(), status:z.enum(["pending"]).optional() }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.userId;
       // if (!userId) {
@@ -82,7 +82,8 @@ export const shipmentRouter = router({
       }
       try {
         const shipment = await ctx.db.shipment.findMany({
-          where: { truckId }
+          where: { truckId },
+          status: "pending"
         });
         return shipment;
       } catch (e: unknown) {
