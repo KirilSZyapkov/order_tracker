@@ -35,7 +35,7 @@ export function useConfirmDelivery() {
     })
 
     return {
-        confirm: (id: string, data: any) => mutation.mutate({ id, ...data }),
+        confirmDelivery: (id: string, data: any) => mutation.mutate({ id, ...data }),
         status: mutation.status,
     }
 }

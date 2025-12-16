@@ -6,34 +6,34 @@ import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trp
 export const shipmentRouter = router({
   // Get all shipments
   getAllShipments: publicProcedure
-  .input(z.object({ organizationName: z.string() }))
-  .query(async ({ ctx, input }) => {
-    const userId = ctx.userId;
-    const organizationName = input.organizationName;
-    // if (!userId) {
-    //   throw new TRPCError({
-    //     code: 'UNAUTHORIZED',
-    //     message: 'User not authenticated',
-    //   });
-    // };
-    try {
-      const shipments = await ctx.db.shipment.findMany({
-        where: { organizationName }
-      });
-      if (shipments.length === 0 || !shipments) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'No shipments found',
+    .input(z.object({ organizationName: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      const organizationName = input.organizationName;
+      // if (!userId) {
+      //   throw new TRPCError({
+      //     code: 'UNAUTHORIZED',
+      //     message: 'User not authenticated',
+      //   });
+      // };
+      try {
+        const shipments = await ctx.db.shipment.findMany({
+          where: { organizationName }
         });
-      };
-      return shipments;
-    } catch (e: unknown) {
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to fetch shipments',
-      });
-    }
-  }),
+        if (shipments.length === 0 || !shipments) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'No shipments found',
+          });
+        };
+        return shipments;
+      } catch (e: unknown) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch shipments',
+        });
+      }
+    }),
   getShipmentById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -64,7 +64,7 @@ export const shipmentRouter = router({
       };
     }),
   getAssignedShipmentByTruckId: publicProcedure
-    .input(z.object({ truckId: z.string(), status:z.enum(["pending"]).optional() }))
+    .input(z.object({ truckId: z.string(), status: z.enum(["delivered", "inTransit", "delayed"]).optional() }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.userId;
       // if (!userId) {
@@ -74,16 +74,17 @@ export const shipmentRouter = router({
       //   });
       // };
       const truckId = input.truckId;
-      if(!truckId){
+      const status = input.status;
+      if (!truckId) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: "Require id!" 
+          message: "Require id!"
         })
       }
       try {
         const shipment = await ctx.db.shipment.findMany({
-          where: { truckId },
-          status: "pending"
+          where: { truckId, status }
+
         });
         return shipment;
       } catch (e: unknown) {
@@ -114,7 +115,11 @@ export const shipmentRouter = router({
             clientName: input.clientName,
             deliveryAddress: input.deliveryAddress,
             deliveryDay: input.deliveryDay,
+            actualDeliveryDay: input.actualDeliveryDay,
+            deliveryTime: input.deliveryTime,
             phone: input.phone,
+            gpsCoordinates: input.gpsCoordinates,
+            recipientName: input.recipientName,
             status: input.status,
             organizationName: input.organizationName,
           }
