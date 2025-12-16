@@ -13,6 +13,7 @@ export default function SocketProvider({ children }: { children: React.ReactNode
     });
 
     socket.on("shipment:update", (shipment) => {
+      console.log("📡 socket update received:", shipment);
       updateShipment(shipment.id, shipment)
     });
 

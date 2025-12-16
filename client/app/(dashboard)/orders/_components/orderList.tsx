@@ -165,13 +165,15 @@ export default function ordersList() {
       header: "Truck Number",
       cell: ({ row }) => {
         const shipment = row.original;
+        const status = shipment.status;
         return (
           <Select
             value={shipment.truckNumber || ""}
             onValueChange={(value: string) => handleTruckAssign(shipment.id, value, shipment.organizationName)}
+            disabled={status === "delivered" || status === "delayed"}       
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Truck number" />
+            <SelectTrigger className="w-[180px] cursor-pointer">
+              <SelectValue placeholder="Truck number"/>
             </SelectTrigger>
             <SelectContent>
               {trucks.map(t => (
