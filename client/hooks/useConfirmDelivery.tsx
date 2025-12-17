@@ -28,10 +28,10 @@ export function useConfirmDelivery() {
 
             ctx.shipment.getAllShipments.invalidate();
         },
-        onSuccess(data) {
-            toast.success("Marked as delivered");
-            ctx.shipment.getAllShipments.invalidate();
-        },
+        // onSuccess(data) {
+        //     toast.success("Marked as delivered");
+        //     ctx.shipment.getAllShipments.invalidate();
+        // },
     })
 
     return {
