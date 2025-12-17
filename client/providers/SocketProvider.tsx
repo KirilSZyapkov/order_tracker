@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export default function SocketProvider({ children }: { children: React.ReactNode }) {
   const updateShipment = useAppStore((state) => state.updateShipment);
 
-  
+
 
   useEffect(() => {
     const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000", {
@@ -16,7 +16,7 @@ export default function SocketProvider({ children }: { children: React.ReactNode
     });
 
     socket.on("connect", () => {
-     console.log("🟢 socket connected:", socket.id);
+      console.log("🟢 socket connected:", socket.id);
     });
 
     socket.on("disconnect", () => {
@@ -25,10 +25,11 @@ export default function SocketProvider({ children }: { children: React.ReactNode
 
 
     socket.on("shipment:update", (shipment) => {
-      updateShipment(shipment.id, shipment)
+      toast.success(`Shipment ${shipment.orderNumber} updated`);
+      updateShipment(shipment.id, shipment);
     });
 
-    return ()=>{
+    return () => {
       socket.disconnect();
     }
   }, [updateShipment])

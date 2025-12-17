@@ -67,14 +67,15 @@ export default function ordersList() {
 
   const updateShipmentMutation = trpc.shipment.updateShipmentById.useMutation({
     onSuccess: () => {
-      toast.success("Truck updated");
+      toast.success("Shipment assigned successfully");
       ctx.shipment.getAllShipments.invalidate();
     },
     onError: () => {
       toast.error("Update failed — reverting");
       ctx.shipment.getAllShipments.invalidate();
     },
-  })
+  });
+
 
   useEffect(() => {
     if (data) setTrucks(data);
@@ -173,7 +174,7 @@ export default function ordersList() {
             disabled={status === "delivered" || status === "delayed"}       
           >
             <SelectTrigger className="w-[180px] cursor-pointer">
-              <SelectValue placeholder="Truck number"/>
+              <SelectValue placeholder="Assign Truck"/>
             </SelectTrigger>
             <SelectContent>
               {trucks.map(t => (

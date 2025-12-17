@@ -27,11 +27,6 @@ const io = new SocketIOServer(httpServer, {
   }
 });
 
-app.use((req, next)=>{
-  req.io = io;
-  next();
-});
-
 io.on("connection", (socket) => {
   console.log(`New client connected: ${socket.id}`);
 

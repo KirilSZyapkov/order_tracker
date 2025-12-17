@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { useAppStore } from "@/store/store";
 import { useConfirmDelivery } from "@/hooks/useConfirmDelivery";
@@ -9,8 +8,8 @@ import { ConfirmDialog } from "@/components/shared/confirmDialog";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 import { ShipmentType } from "@/types/shipmentType";
 import { isDelayed } from "@/lib/utils";
+import Loader from "@/components/shared/Loader";
 
-// Todo: да оправя изчистването на пратката от списъка след потвърждаване на доставка
 export default function DriverPage() {
 
   const params = useParams();
@@ -32,7 +31,7 @@ export default function DriverPage() {
   async function onConfirmDelivery(shipment: ShipmentType) {
     const confirmed = confirm("Please confirm delivery for " + shipment.clientName);
     if (!confirmed) return;
-    
+
     const id = shipment.id;
     const locale = navigator.language;
     const actualDeliveryDay = new Intl.DateTimeFormat(locale, {
