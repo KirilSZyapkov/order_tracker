@@ -30,6 +30,7 @@ export function useConfirmDelivery() {
         },
         onSuccess(data) {
             toast.success("Marked as delivered");
+            ctx.shipment.getAllShipments.invalidate();
         },
     })
 

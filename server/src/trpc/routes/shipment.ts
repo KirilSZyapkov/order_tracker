@@ -155,6 +155,7 @@ export const shipmentRouter = router({
           where: { id },
           data: updateData
         });
+        console.log("IO EXISTS?", !!ctx.io);
         ctx.io?.emit('shipment:update', updatedShipment);
         return updatedShipment;
 

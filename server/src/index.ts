@@ -21,9 +21,15 @@ app.use("/", healthRoute);
 const httpServer = http.createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
   }
+});
+
+app.use((req, next)=>{
+  req.io = io;
+  next();
 });
 
 io.on("connection", (socket) => {
