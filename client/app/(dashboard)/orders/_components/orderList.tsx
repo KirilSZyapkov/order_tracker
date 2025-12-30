@@ -65,14 +65,14 @@ export default function ordersList() {
     { enabled: Boolean(user?.organizationName) },
   );
 
-  const updateShipmentMutation = trpc.shipment.updateShipmentById.useMutation({
+  const updateShipmentMutation = trpc.shipments.updateShipmentById.useMutation({
     onSuccess: () => {
       toast.success("Shipment assigned successfully");
-      ctx.shipment.getAllShipments.invalidate();
+      ctx.shipments.getAllShipments.invalidate();
     },
     onError: () => {
       toast.error("Update failed — reverting");
-      ctx.shipment.getAllShipments.invalidate();
+      ctx.shipments.getAllShipments.invalidate();
     },
   });
 

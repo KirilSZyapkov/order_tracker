@@ -4,7 +4,7 @@ import { userRouter } from "./routes/user";
 import { truckRouter } from "./routes/truck";
 
 export const appRouter = router({
-  shipment: shipmentRouter,
+  shipments: shipmentRouter,
   user: userRouter,
   truck: truckRouter,
 });

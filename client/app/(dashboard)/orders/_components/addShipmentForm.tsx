@@ -24,11 +24,11 @@ export default function addShipmentForm() {
   
   const addShipments = useAppStore((state) => state.addShipment);
   const user = useAppStore((state) => state.user);
-
+  
   console.log("orders", user);
   
 
-  const createShipment = trpc.shipment.createNewShipment.useMutation({
+  const createShipment = trpc.shipments.createNewShipment.useMutation({
     onSuccess: async (newShipments) => {
       toast.success("Shipment created successfully");
       addShipments(newShipments);
