@@ -31,7 +31,7 @@ export default function RootLayout({
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:4000/trpc"
+          url: process.env.NEXT_PUBLIC_SERVER_URL! + "/trpc",
         }),
       ],
     })

@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure } from '@acme/shared';
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createNewTruckInput } from "../../types/trpcInputTypes/types";

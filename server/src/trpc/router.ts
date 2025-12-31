@@ -1,10 +1,10 @@
-import { router } from "./trpc";
+import { router } from '@acme/shared';
 import { shipmentRouter } from "./routes/shipment";
 import { userRouter } from "./routes/user";
 import { truckRouter } from "./routes/truck";
 
 export const appRouter = router({
-  shipments: shipmentRouter,
+  shipment: shipmentRouter,
   user: userRouter,
   truck: truckRouter,
 });

@@ -19,6 +19,8 @@ const initialData = {
   gpsCoordinates: "",
 }
 
+type Test = typeof trpc
+
 export default function addShipmentForm() {
   const [formData, setFormData] = useState<NewShipmentFormType>(initialData);
   
@@ -28,16 +30,16 @@ export default function addShipmentForm() {
   console.log("orders", user);
   
 
-  // const createShipment = trpc.shipments.createNewShipment.useMutation({
-  //   onSuccess: async (newShipments) => {
-  //     toast.success("Shipment created successfully");
-  //     addShipments(newShipments);
-  //     setFormData(initialData);
-  //   },
-  //   onError: () => {
-  //     toast.error("❌ Failed to create user.");
-  //   },
-  // })
+  const createShipment = trpc.shipment.createNewShipment.useMutation({
+    onSuccess: async (newShipments) => {
+      toast.success("Shipment created successfully");
+      addShipments(newShipments);
+      setFormData(initialData);
+    },
+    onError: () => {
+      toast.error("❌ Failed to create user.");
+    },
+  })
 
   async function onSubmintNewShipment(e: React.FormEvent) {
     e.preventDefault();
@@ -47,17 +49,17 @@ export default function addShipmentForm() {
       return;
     };
    
-    // createShipment.mutate({
-    //   ...formData,
-    //   autherId: user.id,
-    //   organizationName: user.organizationName,
-    //   truckId: "",
-    //   truckNumber: "",
-    //   actualDeliveryDay: "",
-    //   deliveryTime: "",
-    //   recipientName: "",
-    //   status: "pending",
-    // });
+    createShipment.mutate({
+      ...formData,
+      autherId: user.id,
+      organizationName: user.organizationName,
+      truckId: "",
+      truckNumber: "",
+      actualDeliveryDay: "",
+      deliveryTime: "",
+      recipientName: "",
+      status: "pending",
+    });
 
   }
   return (
@@ -158,12 +160,11 @@ export default function addShipmentForm() {
         className="w-full rounded-lg py-3 text-base font-semibold"
         // disabled={createShipment.isPending}
       >
-        {/* {createShipment.isPending ? (
+        {createShipment.isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           "Create Shipment"
-        )} */}
-        Test
+        )}
       </Button>
     </form>
 

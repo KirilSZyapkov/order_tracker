@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { router, publicProcedure } from '../trpc';
+import { router, publicProcedure } from '@acme/shared';
 import { TRPCError } from '@trpc/server';
 import { createNewShipmentInput, updateShipmentByIdInput } from '../../types/trpcInputTypes/types';
 

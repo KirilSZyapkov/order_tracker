@@ -1,7 +1,9 @@
 {
-  "name": "server",
+  "name": "@acme/server",
   "version": "1.0.0",
+  "private": true,
   "description": "",
+  "types": "src/trpc/router.ts",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,7 +23,8 @@
     "mongodb": "^7.0.0",
     "prisma": "^6.19.0",
     "socket.io": "^4.8.1",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "@acme/shared": "*"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",
