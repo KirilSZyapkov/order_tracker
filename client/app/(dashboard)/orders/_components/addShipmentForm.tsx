@@ -19,7 +19,7 @@ const initialData = {
   gpsCoordinates: "",
 }
 
-type Test = typeof trpc
+type Test = keyof typeof trpc
 
 export default function addShipmentForm() {
   const [formData, setFormData] = useState<NewShipmentFormType>(initialData);
