@@ -1,10 +1,8 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-// import * as trpcExpress from '@trpc/server/adapters/express';
+
 import { Server as SocketIOServer } from 'socket.io';
-// import { appRouter, AppRouter } from './trpc/router';
-// import { createContext } from './trpc/context';
 import healthRoute from './routes/health';
 import { errorHandlingMiddleware } from './middleware/errorHandling';
 import { clerkMiddleware } from '@clerk/express';
@@ -14,7 +12,11 @@ import userRoutes from "./routes/user.routes";
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.CLIENT_URL ?? "http://localhost:3000";
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware());
@@ -27,8 +29,8 @@ app.use("/api/users", userRoutes);
 const httpServer = http.createServer(app);
 export const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PATCH"],
     credentials: true,
   }
 });
@@ -40,18 +42,6 @@ io.on("connection", (socket) => {
     console.log(`Client disconnected: ${socket.id}`);
   });
 });
-
-// app.use(
-//   '/trpc',
-//   trpcExpress.createExpressMiddleware({
-//     router: appRouter,
-//     createContext: (opts) => createContext({
-//       req: opts.req,
-//       res: opts.res,
-//       io
-//     }),
-//   })
-// );
 
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
