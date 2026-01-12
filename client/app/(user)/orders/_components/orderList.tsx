@@ -46,7 +46,7 @@ import {useShipmentsSync} from "@/hooks/useShipmentsSync";
 import {toast} from "sonner";
 import {Spinner} from "@/components/ui/spinner"
 import {TruckType} from "@/types/truckType";
-import truckList from "@/app/(dashboard)/trucks/_components/truckList";
+import truckList from "@/app/(user)/trucks/_components/truckList";
 import {ShipmentType, UpdateShipmentInput} from "@/types/shipmentType";
 
 export default function OrdersList() {
