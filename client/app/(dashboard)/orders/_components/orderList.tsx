@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,9 +13,9 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import {ArrowUpDown, ChevronDown, MoreHorizontal} from "lucide-react";
+import {apiFetch} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,7 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import {Input} from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -41,13 +41,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useAppStore } from "@/store/store";
-import { useShipmentsSync } from "@/hooks/useShipmentsSync";
-import { trpc } from "@/utils/trpc";
-import { toast } from "sonner";
-import Loader from "@/components/shared/Loader";
+import {useAppStore} from "@/store/store";
+import {useShipmentsSync} from "@/hooks/useShipmentsSync";
+import {toast} from "sonner";
+import {Spinner} from "@/components/ui/spinner"
+import {TruckType} from "@/types/truckType";
+import truckList from "@/app/(dashboard)/trucks/_components/truckList";
+import {ShipmentType, UpdateShipmentInput} from "@/types/shipmentType";
 
-export default function ordersList() {
+export default function OrdersList() {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -58,120 +60,120 @@ export default function ordersList() {
   const setTrucks = useAppStore((state) => state.setTrucks);
   const updateShipment = useAppStore((state) => state.updateShipment);
   const trucks = useAppStore((state) => state.trucks);
-  const ctx = trpc.useContext();
+  const {isLoading} = useShipmentsSync({organizationName: user?.organizationName || ""});
 
-  const { data, isLoading, isError } = trpc.truck.getAllTrucks.useQuery(
-    { organizationName: user?.organizationName || "" },
-    { enabled: Boolean(user?.organizationName) },
-  );
-
-  const updateShipmentMutation = trpc.shipment.updateShipmentById.useMutation({
-    onSuccess: () => {
-      toast.success("Shipment assigned successfully");
-      ctx.shipment.getAllShipments.invalidate();
-    },
-    onError: () => {
-      toast.error("Update failed — reverting");
-      ctx.shipment.getAllShipments.invalidate();
-    },
-  });
-
-
+  console.log("orderList", shipments);
+  console.log("orderList", isLoading);
   useEffect(() => {
-    if (data) setTrucks(data);
-  }, [data]);
+    async function fetch() {
+      const trucksList = await apiFetch<TruckType[]>(`/api/trucks?organizationName=${user?.organizationName}`, {method: "GET"});
+      setTrucks(trucksList ?? []);
+    };
+    fetch();
+  }, [shipments]);
 
-  useShipmentsSync({ organizationName: user?.organizationName || "" });
+  async function handleTruckAssign(id: string, truckNumber: string, organizationName: string, shipment:ShipmentType) {
 
-  async function handleTruckAssign(id: string, truckNumber: string, organizationName: string) {
     const truck = trucks.find(t => (t.plateNumber === truckNumber && t.organizationName === organizationName));
-    if (!truck) return;
-    updateShipment(id, { truckId: truck.id, truckNumber });
 
-    updateShipmentMutation.mutate({
-      id,
-      truckNumber,
-      truckId: truck.id,
-      status: "inTransit",
-      updatedAt: new Date().toISOString(),
-    })
+    if (!truck) return;
+    updateShipment(id, {truckId: truck.id, truckNumber});
+    try {
+      await apiFetch<UpdateShipmentInput>(
+        `/api/shipments/${id}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            truckNumber,
+            truckId: truck.id,
+            status: "inTransit",
+            updatedAt: new Date().toISOString(),
+          })
+        },
+        "Update failed — reverting"
+      );
+    } catch (e: unknown) {
+      updateShipment(id, shipment);
+    }
+
+
   };
 
   const columns: ColumnDef<typeof shipments[0]>[] = [
     {
       accessorKey: "orderNumber",
-      header: ({ column }) => (
+      header: ({column}) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="cursor-pointer"
         >
           Order Number
-          <ArrowUpDown />
+          <ArrowUpDown/>
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
+      cell: ({row}) => <div>{row.getValue("orderNumber")}</div>,
     },
 
     {
       accessorKey: "clientName",
       header: "Client Name",
-      cell: ({ row }) => <div>{row.getValue("clientName")}</div>,
+      cell: ({row}) => <div>{row.getValue("clientName")}</div>,
     },
 
     {
       accessorKey: "deliveryAddress",
       header: "Delivery Address",
-      cell: ({ row }) => <div>{row.getValue("deliveryAddress")}</div>,
+      cell: ({row}) => <div>{row.getValue("deliveryAddress")}</div>,
     },
 
     {
       accessorKey: "deliveryDay",
       header: "Delivery Day",
-      cell: ({ row }) => <div>{row.getValue("deliveryDay")}</div>,
+      cell: ({row}) => <div>{row.getValue("deliveryDay")}</div>,
     },
 
     {
       accessorKey: "actualDeliveryDay",
       header: "Actual Delivery Day",
-      cell: ({ row }) => <div>{row.getValue("actualDeliveryDay") || "-"}</div>,
+      cell: ({row}) => <div>{row.getValue("actualDeliveryDay") || "-"}</div>,
     },
 
     {
       accessorKey: "deliveryTime",
       header: "Delivery Time",
-      cell: ({ row }) => <div>{row.getValue("deliveryTime") || "-"}</div>,
+      cell: ({row}) => <div>{row.getValue("deliveryTime") || "-"}</div>,
     },
 
     {
       accessorKey: "phone",
       header: "Phone",
-      cell: ({ row }) => <div>{row.getValue("phone")}</div>,
+      cell: ({row}) => <div>{row.getValue("phone")}</div>,
     },
 
     {
       accessorKey: "gpsCoordinates",
       header: "GPS",
-      cell: ({ row }) => <div>{row.getValue("gpsCoordinates") || "-"}</div>,
+      cell: ({row}) => <div>{row.getValue("gpsCoordinates") || "-"}</div>,
     },
 
     {
       accessorKey: "recipientName",
       header: "Recipient",
-      cell: ({ row }) => <div>{row.getValue("recipientName") || "-"}</div>,
+      cell: ({row}) => <div>{row.getValue("recipientName") || "-"}</div>,
     },
 
     {
       accessorKey: "truckNumber",
       header: "Truck Number",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         const shipment = row.original;
         const status = shipment.status;
         return (
           <Select
             value={shipment.truckNumber || ""}
-            onValueChange={(value: string) => handleTruckAssign(shipment.id, value, shipment.organizationName)}
-            disabled={status === "delivered" || status === "delayed"}       
+            onValueChange={(value: string) => handleTruckAssign(shipment.id, value, shipment.organizationName, shipment)}
+            disabled={status === "delivered" || status === "delayed"}
           >
             <SelectTrigger className="w-[180px] cursor-pointer">
               <SelectValue placeholder="Assign Truck"/>
@@ -191,14 +193,14 @@ export default function ordersList() {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
+      cell: ({row}) => (
         <div className="capitalize">{row.getValue("status")}</div>
       ),
     },
     {
       id: "actions",
       enableHiding: false,
-      cell: ({ row }) => {
+      cell: ({row}) => {
         const orderN = row.original
 
         return (
@@ -206,7 +208,7 @@ export default function ordersList() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
+                <MoreHorizontal/>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -216,7 +218,7 @@ export default function ordersList() {
               >
                 Copy Order N
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator/>
               <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
               {/* To do ... to add more actions(like "eddit") */}
             </DropdownMenuContent>
@@ -262,7 +264,7 @@ export default function ordersList() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Columns <ChevronDown />
+                Columns <ChevronDown/>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -334,8 +336,11 @@ export default function ordersList() {
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell className="h-24 text-center">
-              {isLoading ? <Loader /> : <p className="text-2xl font-semibold text-gray-800 text-center mb-4">No Orders found</p>}
+            <TableCell className="text-center">
+              {isLoading ? <div className="flex items-center gap-2 justify-center text-2xl">
+                  <Spinner className="size-6"/> <span>Loading...</span>
+                </div> :
+                <p className="text-2xl font-semibold text-gray-800 text-center mb-4">No Orders found</p>}
             </TableCell>
           </TableRow>
         </TableBody>

@@ -12,8 +12,23 @@ export type ShipmentType = {
   phone: string
   gpsCoordinates: string | null
   recipientName: string | null
-  status: string
+  status: "pending" | "inTransit" | "delivered" | "delayed"
   organizationName: string
   createdAt: string
   updatedAt: string | null
 }
+
+export type UpdateShipmentInput = {
+  id: string;
+  status?: "pending" | "inTransit" | "delivered" | "delayed";
+  actualDeliveryDay?: string;
+  deliveryTime?: string;
+  truckNumber?: string;
+  clientName?: string;
+  deliveryAddress?: string;
+  deliveryDay?: string;
+  phone?: string;
+  gpsCoordinates?: string;
+  recipientName?: string;
+  updatedAt?: string;
+};

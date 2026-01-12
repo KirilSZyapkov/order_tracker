@@ -1,17 +1,37 @@
 
 import { useEffect } from "react";
-import { trpc } from "@/utils/trpc";
+import { useQuery } from "@tanstack/react-query";
+
 import { useAppStore } from "@/store/store";
 import { toast } from "sonner";
+import { UserType } from "@/types/userType";
+import { apiFetch } from "@/lib/utils";
+import {useUser} from "@clerk/nextjs";
 
 export function useUserSync() {
-
+  // const {user, isLoaded} = useUser();
+  const userId = "test_id";
   const setUser = useAppStore((s) => s.setUser);
 
-  const { data, isError, isLoading, refetch } = trpc.user.getUserById.useQuery(undefined, { enabled: true });
+  const query = useQuery<UserType | null>({
 
-    console.log("useUserSync",data);
-    
+    queryKey: ["user", userId],
+
+    enabled: Boolean(userId),
+    staleTime: 0,
+    cacheTime: 0,
+    retry: false,
+    queryFn: async (): Promise<UserType | null> => {
+      // да заменя тест–ид с user.id
+      const userData = await apiFetch<UserType>(`http://localhost:4000/api/users/${userId}`,
+        { method: "GET" });
+
+      return userData;
+    }
+  })
+
+  const { data, isError, isLoading, refetch } = query;
+
   useEffect(() => {
     if (data) {
       setUser(data);
@@ -19,6 +39,8 @@ export function useUserSync() {
       setUser(null);
     }
   }, [data]);
+
+  console.log("useUserSync", data );
 
   useEffect(() => {
     if (isError) {

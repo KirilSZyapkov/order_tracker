@@ -1,17 +1,45 @@
 
 import { useEffect } from "react";
-import { trpc } from "@/utils/trpc";
+import { useQuery } from "@tanstack/react-query";
 import { useAppStore } from "@/store/store";
 import { toast } from "sonner";
+import { apiFetch } from "@/lib/utils";
+import { ShipmentType } from "@/types/shipmentType";
 
-export function useShipmentsSync(opts?: { truckId?: string, organizationName?: string }) {
+
+type Options = {
+  truckId?: string;
+  organizationName?: string;
+}
+
+export function useShipmentsSync(opts?: Options) {
   const setShipments = useAppStore((s) => s.setShipments);
+  console.log("useShipmentSync 17 - ", opts?.truckId);
+  const isTruckMode = Boolean(opts?.truckId);
+  console.log("useShipmentSync 19 - ", isTruckMode);
 
-  const isTruckMode = !!opts?.truckId;
-  const query = isTruckMode
-    ? trpc.shipment.getAssignedShipmentByTruckId.useQuery({ truckId: opts!.truckId!, status:"inTransit" }, { enabled: Boolean(opts?.truckId) })
-    : trpc.shipment.getAllShipments.useQuery({ organizationName: opts!.organizationName! }, { enabled: Boolean(opts?.organizationName) });
+  const query = useQuery<ShipmentType[] | null>({
 
+    queryKey: isTruckMode
+    ?[opts?.truckId]
+    :[opts?.organizationName],
+
+    enabled: isTruckMode ? Boolean(opts?.truckId) : Boolean(opts?.organizationName),
+
+    queryFn: async ():Promise<ShipmentType[] | null>=>{
+      let url: string = "";
+
+      if(isTruckMode){
+        url = `/api/shipments/assigned/${opts?.truckId}?status=inTransit`;
+      } else {
+        url = `/api/shipments?organizationName=${opts?.organizationName}`;
+      }
+
+      const listData = await apiFetch<ShipmentType[]>(url,{ method: "GET" });
+
+      return listData;
+    }
+ })
   const { data, isError, isLoading, refetch } = query;
 
   useEffect(() => {

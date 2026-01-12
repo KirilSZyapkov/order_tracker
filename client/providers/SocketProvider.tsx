@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { useAppStore } from "@/store/store";
 import { toast } from "sonner";
+import {ShipmentType} from "@/types/shipmentType";
 
 export default function SocketProvider({ children }: { children: React.ReactNode }) {
   const updateShipment = useAppStore((state) => state.updateShipment);
@@ -24,8 +25,20 @@ export default function SocketProvider({ children }: { children: React.ReactNode
     });
 
 
-    socket.on("shipment:update", (shipment) => {
-      toast.success(`Shipment ${shipment.orderNumber} updated`);
+    socket.on("shipment:update", (shipment: ShipmentType) => {
+      const status = shipment.status;
+
+      switch (status) {
+        case "inTransit":{
+          toast.success(`Shipment ${shipment.orderNumber} updated`);
+        }
+        break;
+        case "delivered":
+        case "delayed":{
+          toast.success(`Shipment ${shipment.orderNumber} delivered`);
+        }
+        break;
+      }
       updateShipment(shipment.id, shipment);
     });
 

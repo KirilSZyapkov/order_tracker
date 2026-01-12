@@ -9,11 +9,11 @@ export interface Truck {
 };
 
 export interface TruckState {
-    trucks: Truck[];
+    trucks: Truck[] | [];
     setTrucks: (trucks: Truck[]) => void;
     addTruck: (truck: Truck) => void;
     updateTruck: (id: string, updates: Partial<Truck>) => void;
-    removeTruck: (id: String) => void;
+    removeTruck: (id: string) => void;
 };
 
 export const createTruckSlice: StateCreator<TruckState> = (set) => ({

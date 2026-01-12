@@ -1,30 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
-import { useAppStore } from "@/store/store";
-import { trpc } from "@/utils/trpc";
-import { Card, CardContent } from "@/components/ui/card";
-import { Files } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipTrigger, } from "@/components/ui/tooltip"
+import {useEffect} from "react";
+import {useAppStore} from "@/store/store";
 
-export default function truckList() {
+import {Card, CardContent} from "@/components/ui/card";
+import {Files} from 'lucide-react';
+import {Tooltip, TooltipContent, TooltipTrigger,} from "@/components/ui/tooltip"
+import {apiFetch} from "@/lib/utils";
+import {TruckType} from "@/types/truckType";
+
+export default function TruckList() {
   const user = useAppStore((state) => state.user);
   const trucks = useAppStore((state) => state.trucks);
   const setTruck = useAppStore((state) => state.setTrucks);
 
-
-  // Todo... да проверя за логнат юзър, ако няма да редиректна към логин форма!
-
-  const { data } = trpc.truck.getAllTrucks.useQuery(
-    { organizationName: user?.organizationName || "" },
-    { enabled: Boolean(user?.organizationName) }
-  );
-
   useEffect(() => {
-    if (data) {
-      setTruck(data);
+    async function fetch() {
+      const listTrucks = await apiFetch<TruckType[]>(`/api/trucks?organizationName=${user?.organizationName}`,
+        {
+          method: "GET"
+        },
+        "Failed to load trucks"
+      );
+      setTruck(listTrucks ?? []);
     };
-  }, [data]);
+    fetch();
+  }, [user]);
+  // Todo... да проверя за логнат юзър, ако няма да редиректна към логин форма!
 
   // Todo: да доразвия картичката. Да се изписва име на превозвача и контакти
 
@@ -38,7 +40,8 @@ export default function truckList() {
                 <div>{t.plateNumber}</div>
                 <Tooltip>
                   <TooltipTrigger>
-                    <Files className="cursor-pointer" onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/truck-list/${t.id}`)} />
+                    <Files className="cursor-pointer"
+                           onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/truck-list/${t.id}`)}/>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Copy truck link</p>
@@ -47,7 +50,7 @@ export default function truckList() {
               </CardContent>
             </Card>
           ))}
-        </div >
+        </div>
         : (<h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">No trucks were found.</h2>)
       }
     </>

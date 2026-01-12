@@ -1,22 +1,24 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
-import { trpc } from "@/utils/trpc";
-import { toast } from "sonner";
-import { NewUserFormType } from "@/types/form_types/newUserFormType";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useAppStore } from "@/store/store";
+import {useUser} from "@clerk/nextjs";
+import {toast} from "sonner";
+import {NewUserFormType} from "@/types/form_types/newUserFormType";
+import {useRouter} from "next/navigation";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Loader2} from "lucide-react";
+import {useEffect, useState} from "react";
+import {useAppStore} from "@/store/store";
 import Loader from "@/components/shared/Loader";
+import {apiFetch} from "@/lib/utils";
+import {UserType} from "@/types/userType";
 
 export default function SyncUser() {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const {user, isSignedIn, isLoaded} = useUser();
   const router = useRouter();
-  const setCurrentUser = useAppStore((state) => state.setUser)
+  const setCurrentUser = useAppStore((state) => state.setUser);
+  const currentUser = useAppStore((state) => state.user);
   // Form local state
   const [formData, setFormData] = useState<NewUserFormType>({
     firstName: "",
@@ -25,79 +27,82 @@ export default function SyncUser() {
     email: "",
     organizationName: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
-  // Fetch current user
-  const {
-    data: currentUser,
-    isLoading: isFetchingUser,
-    refetch,
-  } = trpc.user.getUserById.useQuery(undefined, {
-    enabled: isSignedIn && !!user,
-  });
+  console.log("app/page 33", currentUser);
+  console.log("app/page 34", isSignedIn);
+  console.log("app/page 35", isLoaded);
 
 
-  // Mutation: create user
-  const createUser = trpc.user.createNewUser.useMutation({
-    onSuccess: async (newUser) => {
-      toast.success("User synced successfully!");
-      setCurrentUser(newUser);
-      router.push("/orders");
-    },
-    onError: () => {
-      toast.error("❌ Failed to create user.");
-    },
-  });
   useEffect(() => {
-    // Todo... да върна user от клърк в if проверката!
     if (currentUser) return router.push("/orders"); // No need to show the form if user is already synced
   }, [currentUser, router]);
 
   // Handle form submission
   async function onSubmitNewUser(e: React.FormEvent) {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!formData.firstName || !formData.email || !formData.secondName || !formData.phone) {
       toast.error("Please fill out all fields.");
       return;
-    };
+    }
+
     if (!user) {
-      createUser.mutate({
-        // todo... да заменя тестовото id с оригинално от клърк
-        clerkId: "test_id",
+      const newData = {
+        clerkId: "test2_id",
         email: formData.email,
         firstName: formData.firstName,
         secondName: formData.secondName,
         phone: formData.phone,
         organizationName: formData.organizationName,
         role: "user"
+      }
+      const newCreatedUser = await apiFetch<NewUserFormType>(`/api/users/`, {
+        method: "POST",
+        body: JSON.stringify(newData)
       });
-    } else {
-      alert("Faild to create user");
-    }
-  };
+      setFormData({
+        firstName: "",
+        secondName: "",
+        phone: "",
+        email: "",
+        organizationName: "",
+      });
+      setIsLoading(false);
+      router.push("/orders");
 
-  if (!isLoaded || isFetchingUser) {
+      if (!newCreatedUser) {
+        setIsLoading(false);
+        alert("Faild to create user");
+      }
+    }
+  }
+
+  if (!isLoaded) {
     return (
       <div className="flex justify-center items-center py-10">
-        <Loader />
+        <Loader/>
       </div>
     )
-  };
+  }
 
-  if (currentUser) {
+  // да върна !isSignedIn
+  if (isSignedIn) {
     return (
       <div className="flex justify-center items-center py-10">
-        <Loader />
+        <Loader/>
       </div>
     );
-  };
+  }
+
 
   return (
     <section className="flex justify-center items-center mt-10 px-4 h-screen">
       <Card className="w-full max-w-md shadow-lg border rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-center">
-            "Create New User"
+            &quot;Create New User&quot;
           </CardTitle>
         </CardHeader>
 
@@ -110,7 +115,7 @@ export default function SyncUser() {
                 placeholder="Enter your first name"
                 value={formData.firstName}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, firstName: e.target.value }))
+                  setFormData((prev) => ({...prev, firstName: e.target.value}))
                 }
               />
             </div>
@@ -121,7 +126,7 @@ export default function SyncUser() {
                 placeholder="Enter your second name"
                 value={formData.secondName}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, secondName: e.target.value }))
+                  setFormData((prev) => ({...prev, secondName: e.target.value}))
                 }
               />
             </div>
@@ -134,7 +139,7 @@ export default function SyncUser() {
                 type="email"
                 value={formData.email}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                  setFormData((prev) => ({...prev, email: e.target.value}))
                 }
               />
             </div>
@@ -147,7 +152,7 @@ export default function SyncUser() {
                 type="number"
                 value={formData.phone}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                  setFormData((prev) => ({...prev, phone: e.target.value}))
                 }
               />
             </div>
@@ -159,7 +164,7 @@ export default function SyncUser() {
                 placeholder="Enter Organisation"
                 value={formData.organizationName}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, organizationName: e.target.value }))
+                  setFormData((prev) => ({...prev, organizationName: e.target.value}))
                 }
               />
             </div>
@@ -168,10 +173,10 @@ export default function SyncUser() {
             <Button
               type="submit"
               className="w-full"
-              disabled={createUser.isPending}
+              disabled={isLoading}
             >
-              {createUser.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+              {isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin"/>
               ) : (
                 "Create User"
               )}
@@ -182,3 +187,11 @@ export default function SyncUser() {
     </section>
   );
 }
+
+
+//   async function fetchAndSetUser() {
+//     // да заменя тест–ид с user.id
+//     const currUser = await apiFetch<UserType>(`/api/users/test_id`, {method: "GET"});
+//     setCurrentUser(currUser);
+//   };
+//   fetchAndSetUser();
