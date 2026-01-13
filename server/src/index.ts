@@ -2,24 +2,39 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 
-import { Server as SocketIOServer } from 'socket.io';
+import {Server as SocketIOServer} from 'socket.io';
 import healthRoute from './routes/health';
-import { errorHandlingMiddleware } from './middleware/errorHandling';
-import { clerkMiddleware } from '@clerk/express';
+import {errorHandlingMiddleware} from './middleware/errorHandling';
+import {clerkMiddleware} from '@clerk/express';
 import shipmentRoutes from "./routes/shipment.routes";
 import truckRoutes from "./routes/truck.routes";
 import userRoutes from "./routes/user.routes";
 
 const app = express();
 // да изтрия от env client_url!
-const allowedOrigins = process.env.CLIENT_URL ?? "http://localhost:3000";
-console.log(allowedOrigins)
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://order-tracker-client-29beb81sk-kiril-s-team.vercel.app",
+];
+
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin) {
+      // allow server-to-server, Postman, etc.
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.error("CORS BLOCKED ORIGIN:", origin);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
 }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(clerkMiddleware());
 
 app.use("/", healthRoute);
