@@ -17,24 +17,7 @@ const allowedOrigins = [
   "https://order-tracker-client-29beb81sk-kiril-s-team.vercel.app",
 ];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) {
-      // allow server-to-server, Postman, etc.
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    console.error("CORS BLOCKED ORIGIN:", origin);
-    return callback(null, false);
-  },
-  credentials: true,
-}));
-app.options("*", cors());
-
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(clerkMiddleware());
