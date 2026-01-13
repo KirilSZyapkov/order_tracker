@@ -29,10 +29,12 @@ app.use(cors({
     }
 
     console.error("CORS BLOCKED ORIGIN:", origin);
-    return callback(new Error("Not allowed by CORS"));
+    return callback(null, false);
   },
   credentials: true,
 }));
+app.options("*", cors());
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(clerkMiddleware());
