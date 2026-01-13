@@ -23,7 +23,8 @@ export function useUserSync() {
     retry: false,
     queryFn: async (): Promise<UserType | null> => {
       // да заменя тест–ид с user.id
-      const userData = await apiFetch<UserType>(`http://localhost:4000/api/users/${userId}`,
+      const server = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:4000";
+      const userData = await apiFetch<UserType>(`${server}/api/users/${userId}`,
         { method: "GET" });
 
       return userData;
