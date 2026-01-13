@@ -11,9 +11,10 @@ import truckRoutes from "./routes/truck.routes";
 import userRoutes from "./routes/user.routes";
 
 const app = express();
-
+// да изтрия от env client_url!
 const allowedOrigins = process.env.CLIENT_URL ?? "http://localhost:3000";
 app.use(cors({
+
   origin: allowedOrigins,
   credentials: true
 }));
