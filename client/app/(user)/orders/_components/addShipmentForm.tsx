@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
+import { apiFetch } from "@/lib/utils";
+import {ShipmentType} from "@/types/shipmentType"
 
 const initialData = {
   orderNumber: "",
@@ -20,7 +22,8 @@ const initialData = {
 
 export default function AddShipmentForm() {
   const [formData, setFormData] = useState<NewShipmentFormType>(initialData);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const addShipments = useAppStore((state) => state.addShipment);
   const user = useAppStore((state) => state.user);
   
@@ -29,23 +32,41 @@ export default function AddShipmentForm() {
 
   async function onSubmitNewShipment(e: React.FormEvent) {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!formData.clientName || !formData.deliveryAddress || !formData.orderNumber || !formData.deliveryDay || !formData.phone || !user) {
       toast.error("Please fill out all fields.");
       return;
     };
    
-    // createShipment.mutate({
-    //   ...formData,
-    //   autherId: user.id,
-    //   organizationName: user.organizationName,
-    //   truckId: "",
-    //   truckNumber: "",
-    //   actualDeliveryDay: "",
-    //   deliveryTime: "",
-    //   recipientName: "",
-    //   status: "pending",
-    // });
+    const newRawData = {
+      ...formData,
+      autherId: user.id,
+      organizationName: user.organizationName,
+      truckId: "",
+      truckNumber: "",
+      actualDeliveryDay: "",
+      deliveryTime: "",
+      recipientName: "",
+      status: "pending",
+    };
+
+    const newOrder = await apiFetch<ShipmentType>('/api/shipments',
+      {
+      method: "POST",
+      body: JSON.stringify(newRawData)
+      },
+
+      "Failed to create the shipment"
+    );
+
+    if(newOrder){
+      addShipments(newOrder);
+      setFormData(initialData);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+   
 
   }
   return (
