@@ -43,6 +43,7 @@ export default function SyncUser() {
   async function onSubmitNewUser(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
+    setIsPending(true);
     if (!formData.firstName || !formData.email || !formData.secondName || !formData.phone) {
       toast.error("Please fill out all fields.");
       return;
@@ -50,7 +51,7 @@ export default function SyncUser() {
 
     if (!user) {
       const newData = {
-        clerkId: "test2_id",
+        clerkId: user.id,
         email: formData.email,
         firstName: formData.firstName,
         secondName: formData.secondName,
@@ -62,19 +63,24 @@ export default function SyncUser() {
         method: "POST",
         body: JSON.stringify(newData)
       });
-      setFormData({
-        firstName: "",
-        secondName: "",
-        phone: "",
-        email: "",
-        organizationName: "",
-      });
-      setIsLoading(false);
-      router.push("/orders");
+      
 
       if (!newCreatedUser) {
         setIsLoading(false);
+        setIsPending(false);
         alert("Faild to create user");
+      } else {
+          setFormData({
+          firstName: "",
+          secondName: "",
+          phone: "",
+          email: "",
+          organizationName: "",
+        });
+        setIsLoading(false);
+        setIsPending(false);
+        setCurrentUser(newCreatedUser);
+        router.push("/orders");
       }
     }
   }

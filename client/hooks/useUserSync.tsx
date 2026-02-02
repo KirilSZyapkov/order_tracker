@@ -9,8 +9,9 @@ import { apiFetch } from "@/lib/utils";
 import {useUser} from "@clerk/nextjs";
 
 export function useUserSync() {
-  // const {user, isLoaded} = useUser();
-  const userId = "test_id";
+  const {user, isLoaded} = useUser();
+
+  const userId = user.id;
   const setUser = useAppStore((s) => s.setUser);
 
   const query = useQuery<UserType | null>({
