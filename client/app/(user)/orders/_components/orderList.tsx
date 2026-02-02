@@ -30,7 +30,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -43,11 +42,11 @@ import {
 } from "@/components/ui/select"
 import {useAppStore} from "@/store/store";
 import {useShipmentsSync} from "@/hooks/useShipmentsSync";
-import {toast} from "sonner";
 import {Spinner} from "@/components/ui/spinner"
 import {TruckType} from "@/types/truckType";
-import truckList from "@/app/(user)/trucks/_components/truckList";
 import {ShipmentType, UpdateShipmentInput} from "@/types/shipmentType";
+import Link from "next/link";
+import {toast} from "sonner";
 
 export default function OrdersList() {
 
@@ -154,7 +153,8 @@ export default function OrdersList() {
     {
       accessorKey: "gpsCoordinates",
       header: "GPS",
-      cell: ({row}) => <div>{row.getValue("gpsCoordinates") || "-"}</div>,
+
+      cell: ({row}) => <Link href={row.getValue("gpsCoordinates")}>{row.getValue("gpsCoordinates") || "-"}</Link>,
     },
 
     {
@@ -217,6 +217,11 @@ export default function OrdersList() {
                 onClick={() => navigator.clipboard.writeText(orderN.orderNumber)}
               >
                 Copy Order N
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => orderN.truckNumber ? (navigator.clipboard.writeText(orderN.truckNumber), toast.success("Truck number copied!")) : toast.error("Truck number is not assigned")}
+              >
+                Copy Truck Number
               </DropdownMenuItem>
               <DropdownMenuSeparator/>
               <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>

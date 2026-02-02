@@ -1,4 +1,7 @@
 import NavBarMenu from "@/components/shared/navBarMenu";
+import SocketProvider from "@/providers/SocketProvider";
+
+
 
 export default function RootLayout({
   children,
@@ -9,7 +12,9 @@ export default function RootLayout({
     <>
       <NavBarMenu/>
       <main>
-        {children}
+        <SocketProvider>
+            {children}
+        </SocketProvider>
       </main>
     </>
   );

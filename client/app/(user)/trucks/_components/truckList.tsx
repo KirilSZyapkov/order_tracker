@@ -8,6 +8,7 @@ import {Files} from 'lucide-react';
 import {Tooltip, TooltipContent, TooltipTrigger,} from "@/components/ui/tooltip"
 import {apiFetch} from "@/lib/utils";
 import {TruckType} from "@/types/truckType";
+import {toast} from "sonner";
 
 export default function TruckList() {
   const user = useAppStore((state) => state.user);
@@ -33,7 +34,7 @@ export default function TruckList() {
   return (
     <>
       {trucks.length > 0
-        ? <div>
+        ? <div className="grid grid-cols-1 gap-6">
           {trucks.map(t => (
             <Card key={t.id}>
               <CardContent className="flex justify-between items-center px-10">
@@ -41,7 +42,7 @@ export default function TruckList() {
                 <Tooltip>
                   <TooltipTrigger>
                     <Files className="cursor-pointer"
-                           onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/truck-list/${t.id}`)}/>
+                           onClick={() => (navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_BASE_URL}/truck-list/${t.id}`), toast.success("Truck link copied to clipboard"))}/>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Copy truck link</p>

@@ -1,13 +1,12 @@
 "use client";
 
-import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
-import { ClerkProvider } from "@clerk/nextjs";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {Geist, Geist_Mono} from "next/font/google";
+import {Toaster} from "@/components/ui/sonner";
+import {ClerkProvider} from "@clerk/nextjs";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import "./globals.css";
-import { useState } from "react";
-import SocketProvider from "@/providers/SocketProvider";
-import { useUserSync } from "@/hooks/useUserSync";
+import {useState} from "react";
+import {useUserSync} from "@/hooks/useUserSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,33 +19,33 @@ const geistMono = Geist_Mono({
 });
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode;
 }>) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-      <ClerkProvider>
-        <QueryClientProvider client={queryClient}>
-          <html lang="en">
-            <body
-              className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
-            >
-              <SocketProvider>
-                <UserSyncWrapper>
-                  {children}
-                </UserSyncWrapper>
-              </SocketProvider>
-              <Toaster />
-            </body>
-          </html>
-        </QueryClientProvider>
-      </ClerkProvider>
+    <ClerkProvider>
+      <QueryClientProvider client={queryClient}>
+        <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
+        >
+
+        <UserSyncWrapper>
+          {children}
+        </UserSyncWrapper>
+
+        <Toaster/>
+        </body>
+        </html>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }
 
-function UserSyncWrapper({ children }: { children: React.ReactNode }) {
+function UserSyncWrapper({children}: { children: React.ReactNode }) {
   useUserSync();
   return <>{children}</>;
 }
