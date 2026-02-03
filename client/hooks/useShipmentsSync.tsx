@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAppStore } from "@/store/store";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ type Options = {
 }
 
 export function useShipmentsSync(opts?: Options) {
+  const [isLoading, setIsLoading] = useState(true);
   const setShipments = useAppStore((s) => s.setShipments);
   console.log("useShipmentSync 17 - ", opts?.truckId);
   const isTruckMode = Boolean(opts?.truckId);
@@ -40,20 +41,22 @@ export function useShipmentsSync(opts?: Options) {
       return listData;
     }
  })
-  const { data, isError, isLoading, refetch } = query;
+  const { data, isError, refetch } = query;
 
   useEffect(() => {
     if (data) {
       setShipments(data);
     } else {
       setShipments([]);
-    }
+    };
+    setIsLoading(false);
   }, [data, setShipments]);  
 
   useEffect(() => {
     if (isError) {
       toast.error("Failed to load shipments");
-    }
+    };
+    setIsLoading(false);
   }, [isError]);
 
   return { isLoading, refetch };

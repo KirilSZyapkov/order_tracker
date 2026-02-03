@@ -1,21 +1,20 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)', '/truck-list(.*)', '/']);
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)', '/truck-list/:path*']);
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)','/orders(.*)', '/trucks(.*)'])
+export default clerkMiddleware(async (auth, req) => {
+  const {userId} = await auth();
+  if (isPublicRoute(req)) {
+    return NextResponse.next();
+  };
 
-export default clerkMiddleware(async (auth, req)=>{
-    if(!isPublicRoute(req)){
-        await auth.protect();
-    };
+  if(!userId){
+    return (await auth()).redirectToSignIn();
+  };
 
-    if(isProtectedRoute(req)){
-      const user = await auth.protect();
-      if(!user){
-        return NextResponse.redirect(new URL('/sign-in', req.url));
-      }
-    }
+  return NextResponse.next();
+
 });
 
 export const config = {
@@ -24,5 +23,6 @@ export const config = {
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
+    "/((?!_next|favicon.ico|.*\\..*).*)",
   ],
 }

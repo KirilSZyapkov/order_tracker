@@ -1,25 +1,26 @@
 "use client";
 
-import {useUser} from "@clerk/nextjs";
-import {toast} from "sonner";
-import {NewUserFormType} from "@/types/form_types/newUserFormType";
-import {useRouter} from "next/navigation";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
-import {useEffect, useState} from "react";
-import {useAppStore} from "@/store/store";
+import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
+import { NewUserFormType } from "@/types/form_types/newUserFormType";
+import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAppStore } from "@/store/store";
 import Loader from "@/components/shared/Loader";
-import {apiFetch} from "@/lib/utils";
-import {UserType} from "@/types/userType";
+import { apiFetch } from "@/lib/utils";
+import { UserType } from "@/types/userType";
 
 export default function SyncUser() {
-  const {user, isSignedIn, isLoaded} = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const router = useRouter();
   const setCurrentUser = useAppStore((state) => state.setUser);
   const currentUser = useAppStore((state) => state.user);
   // Form local state
+
   const [formData, setFormData] = useState<NewUserFormType>({
     firstName: "",
     secondName: "",
@@ -34,7 +35,6 @@ export default function SyncUser() {
   console.log("app/page 34", isSignedIn);
   console.log("app/page 35", isLoaded);
 
-
   useEffect(() => {
     if (currentUser) return router.push("/orders"); // No need to show the form if user is already synced
   }, [currentUser, router]);
@@ -44,51 +44,52 @@ export default function SyncUser() {
     e.preventDefault();
     setIsLoading(true);
     setIsPending(true);
+
     if (!formData.firstName || !formData.email || !formData.secondName || !formData.phone) {
       toast.error("Please fill out all fields.");
       return;
-    }
+    };
 
-    if (!user) {
-      const newData = {
-        clerkId: user.id,
-        email: formData.email,
-        firstName: formData.firstName,
-        secondName: formData.secondName,
-        phone: formData.phone,
-        organizationName: formData.organizationName,
-        role: "user"
-      }
-      const newCreatedUser = await apiFetch<NewUserFormType>(`/api/users/`, {
-        method: "POST",
-        body: JSON.stringify(newData)
+    const newData = {
+      clerkId: user?.id,
+      email: formData.email,
+      firstName: formData.firstName,
+      secondName: formData.secondName,
+      phone: formData.phone,
+      organizationName: formData.organizationName,
+      role: "user"
+    };
+
+    const newCreatedUser = await apiFetch<UserType>(`/api/users/`, {
+      method: "POST",
+      body: JSON.stringify(newData)
+    });
+
+
+    if (!newCreatedUser) {
+      setIsLoading(false);
+      setIsPending(false);
+      alert("Faild to create user");
+    } else {
+      setFormData({
+        firstName: "",
+        secondName: "",
+        phone: "",
+        email: "",
+        organizationName: "",
       });
-      
-
-      if (!newCreatedUser) {
-        setIsLoading(false);
-        setIsPending(false);
-        alert("Faild to create user");
-      } else {
-          setFormData({
-          firstName: "",
-          secondName: "",
-          phone: "",
-          email: "",
-          organizationName: "",
-        });
-        setIsLoading(false);
-        setIsPending(false);
-        setCurrentUser(newCreatedUser);
-        router.push("/orders");
-      }
+      setIsLoading(false);
+      setIsPending(false);
+      setCurrentUser(newCreatedUser);
+      router.push("/orders");
     }
+
   }
 
   if (!isLoaded) {
     return (
       <div className="flex justify-center items-center py-10">
-        <Loader/>
+        <Loader />
       </div>
     )
   }
@@ -97,7 +98,7 @@ export default function SyncUser() {
   if (isSignedIn) {
     return (
       <div className="flex justify-center items-center py-10">
-        <Loader/>
+        <Loader />
       </div>
     );
   }
@@ -121,7 +122,7 @@ export default function SyncUser() {
                 placeholder="Enter your first name"
                 value={formData.firstName}
                 onChange={(e) =>
-                  setFormData((prev) => ({...prev, firstName: e.target.value}))
+                  setFormData((prev) => ({ ...prev, firstName: e.target.value }))
                 }
               />
             </div>
@@ -132,7 +133,7 @@ export default function SyncUser() {
                 placeholder="Enter your second name"
                 value={formData.secondName}
                 onChange={(e) =>
-                  setFormData((prev) => ({...prev, secondName: e.target.value}))
+                  setFormData((prev) => ({ ...prev, secondName: e.target.value }))
                 }
               />
             </div>
@@ -145,7 +146,7 @@ export default function SyncUser() {
                 type="email"
                 value={formData.email}
                 onChange={(e) =>
-                  setFormData((prev) => ({...prev, email: e.target.value}))
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
                 }
               />
             </div>
@@ -158,7 +159,7 @@ export default function SyncUser() {
                 type="number"
                 value={formData.phone}
                 onChange={(e) =>
-                  setFormData((prev) => ({...prev, phone: e.target.value}))
+                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
                 }
               />
             </div>
@@ -170,7 +171,7 @@ export default function SyncUser() {
                 placeholder="Enter Organisation"
                 value={formData.organizationName}
                 onChange={(e) =>
-                  setFormData((prev) => ({...prev, organizationName: e.target.value}))
+                  setFormData((prev) => ({ ...prev, organizationName: e.target.value }))
                 }
               />
             </div>
@@ -182,7 +183,7 @@ export default function SyncUser() {
               disabled={isLoading}
             >
               {isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin"/>
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 "Create User"
               )}

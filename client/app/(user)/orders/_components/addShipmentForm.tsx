@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useShipmentsSync } from "@/hooks/useShipmentsSync";
 import { apiFetch } from "@/lib/utils";
-import {ShipmentType} from "@/types/shipmentType"
+import { ShipmentType } from "@/types/shipmentType"
 
 const initialData = {
   orderNumber: "",
@@ -26,7 +26,7 @@ export default function AddShipmentForm() {
 
   const addShipments = useAppStore((state) => state.addShipment);
   const user = useAppStore((state) => state.user);
-  
+
   console.log("orders/addShipmentForm 27", user);
 
 
@@ -37,7 +37,7 @@ export default function AddShipmentForm() {
       toast.error("Please fill out all fields.");
       return;
     };
-   
+
     const newRawData = {
       ...formData,
       autherId: user.id,
@@ -52,21 +52,21 @@ export default function AddShipmentForm() {
 
     const newOrder = await apiFetch<ShipmentType>('/api/shipments',
       {
-      method: "POST",
-      body: JSON.stringify(newRawData)
+        method: "POST",
+        body: JSON.stringify(newRawData)
       },
 
       "Failed to create the shipment"
     );
 
-    if(newOrder){
+    if (newOrder) {
       addShipments(newOrder);
       setFormData(initialData);
       setIsLoading(false);
     } else {
       setIsLoading(false);
     }
-   
+
 
   }
   return (
@@ -165,7 +165,7 @@ export default function AddShipmentForm() {
       <Button
         type="submit"
         className="w-full rounded-lg py-3 text-base font-semibold"
-        // disabled={createShipment.isPending}
+      // disabled={createShipment.isPending}
       >
         {false ? (
           <Loader2 className="w-4 h-4 animate-spin" />
