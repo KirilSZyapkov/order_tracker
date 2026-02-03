@@ -111,7 +111,7 @@ export default function AddShipmentForm() {
         <div className="flex flex-col space-y-1">
           <label className="text-sm font-medium text-gray-700">Delivery Day</label>
           <Input
-            placeholder="Enter delivery day"
+            placeholder="Enter delivery day in format: 01.01"
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.deliveryDay}
             onChange={(e) =>

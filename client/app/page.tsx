@@ -95,7 +95,7 @@ export default function SyncUser() {
   }
 
   // да върна !isSignedIn
-  if (isSignedIn) {
+  if (!isSignedIn || isLoading) {
     return (
       <div className="flex justify-center items-center py-10">
         <Loader />

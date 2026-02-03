@@ -8,7 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function isDelayed(plannedDay: string): boolean{
-  const planned = new Date(plannedDay);
+
+  const [day, month] = plannedDay.split(".").map(Number);
+  const year = new Date().getFullYear();
+  const planned = new Date(year, month - 1, day);
   const today = new Date();
 
   planned.setHours(0,0,0,0);
@@ -24,8 +27,6 @@ export async function apiFetch<T>(
   errorMessage ="An error occurred while fetching data"
 ):Promise<T | null>{
 
-  console.log("apiFetch 27 - ", options);
-  console.log("apiFetch 28 - ", url);
   try {
     const res = await fetch(url,{
       headers: {"Content-Type": "application/json"},
