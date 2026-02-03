@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useAppStore } from "@/store/store";
-import { Input } from "@/components/ui/input";
-import { NewShipmentFormType } from "@/types/form_types/newShipmentFormType";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { useShipmentsSync } from "@/hooks/useShipmentsSync";
-import { apiFetch } from "@/lib/utils";
-import { ShipmentType } from "@/types/shipmentType"
+import {useState} from "react";
+import {useAppStore} from "@/store/store";
+import {Input} from "@/components/ui/input";
+import {NewShipmentFormType} from "@/types/form_types/newShipmentFormType";
+import {Button} from "@/components/ui/button";
+import {Loader2} from "lucide-react";
+import {toast} from "sonner";
+import {useShipmentsSync} from "@/hooks/useShipmentsSync";
+import {apiFetch} from "@/lib/utils";
+import {ShipmentType} from "@/types/shipmentType"
+import {formatDateForUI} from "@/lib/utils";
 
 const initialData = {
   orderNumber: "",
@@ -27,7 +28,7 @@ export default function AddShipmentForm() {
   const addShipments = useAppStore((state) => state.addShipment);
   const user = useAppStore((state) => state.user);
 
-  console.log("orders/addShipmentForm 27", user);
+  console.log("orders/addShipmentForm 27", formData);
 
 
   async function onSubmitNewShipment(e: React.FormEvent) {
@@ -36,10 +37,16 @@ export default function AddShipmentForm() {
     if (!formData.clientName || !formData.deliveryAddress || !formData.orderNumber || !formData.deliveryDay || !formData.phone || !user) {
       toast.error("Please fill out all fields.");
       return;
-    };
+    }
+    ;
 
     const newRawData = {
-      ...formData,
+      orderNumber: formData.orderNumber.trim(),
+      clientName: formData.clientName.trim(),
+      deliveryAddress: formData.deliveryAddress.trim(),
+      deliveryDay: formatDateForUI(formData.deliveryDay),
+      phone: formData.phone.trim(),
+      gpsCoordinates: formData.gpsCoordinates,
       autherId: user.id,
       organizationName: user.organizationName,
       truckId: "",
@@ -69,6 +76,7 @@ export default function AddShipmentForm() {
 
 
   }
+
   return (
     <form
       onSubmit={onSubmitNewShipment}
@@ -89,7 +97,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.orderNumber}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, orderNumber: e.target.value }))
+              setFormData((prev) => ({...prev, orderNumber: e.target.value}))
             }
           />
         </div>
@@ -102,7 +110,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.clientName}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, clientName: e.target.value }))
+              setFormData((prev) => ({...prev, clientName: e.target.value}))
             }
           />
         </div>
@@ -111,11 +119,12 @@ export default function AddShipmentForm() {
         <div className="flex flex-col space-y-1">
           <label className="text-sm font-medium text-gray-700">Delivery Day</label>
           <Input
+            type="date"
             placeholder="Enter delivery day in format: 01.01"
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.deliveryDay}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, deliveryDay: e.target.value }))
+              setFormData((prev) => ({...prev, deliveryDay: e.target.value}))
             }
           />
         </div>
@@ -129,7 +138,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.phone}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, phone: e.target.value }))
+              setFormData((prev) => ({...prev, phone: e.target.value}))
             }
           />
         </div>
@@ -142,7 +151,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.deliveryAddress}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, deliveryAddress: e.target.value }))
+              setFormData((prev) => ({...prev, deliveryAddress: e.target.value}))
             }
           />
         </div>
@@ -155,7 +164,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.gpsCoordinates}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, gpsCoordinates: e.target.value }))
+              setFormData((prev) => ({...prev, gpsCoordinates: e.target.value}))
             }
           />
         </div>
@@ -165,10 +174,10 @@ export default function AddShipmentForm() {
       <Button
         type="submit"
         className="w-full rounded-lg py-3 text-base font-semibold"
-      // disabled={createShipment.isPending}
+        // disabled={createShipment.isPending}
       >
         {false ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className="w-4 h-4 animate-spin"/>
         ) : (
           "Create Shipment"
         )}
