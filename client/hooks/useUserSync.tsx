@@ -36,11 +36,8 @@ export function useUserSync() {
   const { data, isError, isLoading, refetch } = query;
 
   useEffect(() => {
-    if (data) {
-      setUser(data);
-    } else {
-      setUser(null);
-    }
+    if (data === undefined) return;
+    setUser(data);
   }, [data]);
 
   console.log("useUserSync", data );

@@ -19,6 +19,7 @@ export default function SyncUser() {
   const router = useRouter();
   const setCurrentUser = useAppStore((state) => state.setUser);
   const currentUser = useAppStore((state) => state.user);
+  const isUserLoaded = useAppStore((state) => state.isUserLoaded);
   // Form local state
 
   const [formData, setFormData] = useState<NewUserFormType>({
@@ -34,6 +35,7 @@ export default function SyncUser() {
   console.log("app/page 33", currentUser);
   console.log("app/page 34", isSignedIn);
   console.log("app/page 35", isLoaded);
+  console.log("app/page 38", isUserLoaded);
 
   useEffect(() => {
     if (currentUser) return router.push("/orders"); // No need to show the form if user is already synced
@@ -47,6 +49,8 @@ export default function SyncUser() {
 
     if (!formData.firstName || !formData.email || !formData.secondName || !formData.phone) {
       toast.error("Please fill out all fields.");
+      setIsLoading(false);
+      setIsPending(false);
       return;
     };
 
@@ -95,7 +99,25 @@ export default function SyncUser() {
   }
 
   // да върна !isSignedIn
-  if (!isSignedIn || isLoading) {
+  if (!isSignedIn) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader />
+      </div>
+    );
+  }
+
+  // Wait for the DB sync to confirm whether the user exists.
+  if (!isUserLoaded) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader />
+      </div>
+    );
+  }
+
+  // If the user exists, redirect happens in useEffect – keep UI in loading state.
+  if (currentUser || isLoading) {
     return (
       <div className="flex justify-center items-center py-10">
         <Loader />
