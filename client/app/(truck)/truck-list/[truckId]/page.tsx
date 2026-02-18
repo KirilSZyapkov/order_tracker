@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {useParams} from "next/navigation";
 import {useAppStore} from "@/store/store";
 import {ShipmentCard} from "@/components/shared/shipmentCard";
@@ -8,9 +9,11 @@ import {useShipmentsSync} from "@/hooks/useShipmentsSync";
 import {ShipmentType} from "@/types/shipmentType";
 import {apiFetch, isDelayed} from "@/lib/utils";
 import Loader from "@/components/shared/Loader";
-import {toast} from "sonner";
 
 export default function DriverPage() {
+  const [shipment, setShipment] = useState<ShipmentType | null>(null)
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
   const setShipments = useAppStore((s) => s.setShipments);
   const params = useParams();
   useShipmentsSync(params);
@@ -18,7 +21,6 @@ export default function DriverPage() {
 
   const shipments = useAppStore((s) => s.shipments);
   const removeShipment = useAppStore((s) => s.removeShipment);
-  // const [selected, setSelected] = useState<ShipmentType | null>(null);
   console.log("truck/truckId 22 - ", shipments);
 
 
@@ -30,9 +32,11 @@ export default function DriverPage() {
     )
   }
 
-  async function onConfirmDelivery(shipment: ShipmentType) {
-    const confirmed = confirm("Please confirm delivery for " + shipment.clientName);
-    if (!confirmed) return;
+  async function onConfirmDelivery(shipment: ShipmentType | null) {
+    if(!shipment) return;
+
+    // const confirmed = confirm("Please confirm delivery for " + shipment.clientName);
+    // if (!confirmed) return;
 
     const previousStatus = [...shipments];
     const id = shipment.id;
@@ -76,17 +80,16 @@ export default function DriverPage() {
 
 
 return (
-  // да адаптирам с Шадцсиен Card
   <main className="p-4">
     <h1 className="text-xl font-bold mb-4">Deliveries</h1>
 
     <div className="space-y-3">
       {shipments.map(s => (
-        <ShipmentCard key={s.id} shipment={s} onClick={() => onConfirmDelivery(s)}/>
+        <ShipmentCard key={s.id} shipment={s} onClick={() => {setShipment(s); setOpenModal(true)}}/>
       ))}
     </div>
     {/* Todo: за бъдещо доразвитие. Да се добави записване името на получателя в диалог прозореца onClick={() => setSelected(s)}*/}
-    {/* <ConfirmDialog open={!!selected} title="Mark as delivered?" onConfirm={() => { confirm(selected.id, selected); setSelected(null); }} onCancel={() => setSelected(null)} /> */}
+    <ConfirmDialog open={openModal} title="Confirm delivery!" onConfirm={() => onConfirmDelivery(shipment)} onCancel={() => setOpenModal(false)} />
   </main>
 );
 }

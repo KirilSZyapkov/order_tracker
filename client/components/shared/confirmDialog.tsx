@@ -10,6 +10,16 @@ export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: bool
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white p-4 rounded-lg w-80">
         <h4 className="font-semibold">{title ?? "Confirm delivery?"}</h4>
+        <div>
+          <div>
+          <label/>
+          <input type="text" placeholder="Enter first name" name="clientFristName"/>
+          </div>
+          <div>
+          <label/>
+          <input type="text" placeholder="Enter second name" name="clientsecondName"/>
+          </div>
+        </div>
         <div className="mt-4 flex justify-end gap-2">
           <Button variant="ghost" onClick={onCancel}>Cancel</Button>
           <Button onClick={onConfirm}>Confirm</Button>
