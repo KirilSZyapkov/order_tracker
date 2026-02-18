@@ -4,7 +4,7 @@
 
 import { Button } from "@/components/ui/button";
 
-export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: boolean; onConfirm: ()=>void; onCancel: ()=>void; title?: string }) {
+export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: boolean; onConfirm: () => void; onCancel: () => void; title?: string }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -12,12 +12,12 @@ export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: bool
         <h4 className="font-semibold">{title ?? "Confirm delivery?"}</h4>
         <div>
           <div>
-          <label/>
-          <input type="text" placeholder="Enter first name" name="clientFristName"/>
+            <label htmlFor="clientFirstName" >First Name</label>
+            <input type="text" placeholder="Enter first name" name="clientFristName" />
           </div>
           <div>
-          <label/>
-          <input type="text" placeholder="Enter second name" name="clientsecondName"/>
+            <label htmlFor="clientSecondName">Second Name</label>
+            <input type="text" placeholder="Enter second name" name="clientsecondName" />
           </div>
         </div>
         <div className="mt-4 flex justify-end gap-2">
