@@ -8,7 +8,7 @@ export function ConfirmDialog({ open, onConfirm, onCancel, title, setReceiver}:
   { open: boolean; onConfirm: () => void; onCancel: () => void; title?: string; setReceiver: () => void }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 max-w-5xlmx-auto">
       <div className="bg-white p-4 rounded-lg w-80">
         <h4 className="font-semibold">{title ?? "Confirm delivery?"}</h4>
         <div className="w-full px-2 py-4 flex flex-col gap-4">
