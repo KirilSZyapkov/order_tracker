@@ -4,7 +4,8 @@
 
 import { Button } from "@/components/ui/button";
 
-export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: boolean; onConfirm: () => void; onCancel: () => void; title?: string }) {
+export function ConfirmDialog({ open, onConfirm, onCancel, title, setReceiver}: 
+  { open: boolean; onConfirm: () => void; onCancel: () => void; title?: string; setReceiver: () => void }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -13,11 +14,21 @@ export function ConfirmDialog({ open, onConfirm, onCancel, title }: { open: bool
         <div className="w-full px-2 py-4 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="clientFirstName" >First Name</label>
-            <input className="w-full p-3 mx-2 border border-gray-300 rounded-md" type="text" placeholder="Enter first name" name="clientFirstName" />
+            <input 
+            className="w-full p-3 mx-2 border border-gray-300 rounded-md" 
+            type="text" 
+            placeholder="Enter first name" 
+            name="clientFirstName" />
+            onChange={(e) => setReceiver((prev) => ({ ...prev, firstName: e.target.value }))} />
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="clientSecondName">Second Name</label>
-            <input className="w-full p-3 mx-2 border border-gray-300 rounded-md" type="text" placeholder="Enter second name" name="clientSecondName" />
+            <input 
+            className="w-full p-3 mx-2 border border-gray-300 rounded-md" 
+            type="text" 
+            placeholder="Enter second name" 
+            name="clientSecondName" />
+            onChange={(e) => setReceiver((prev) => ({ ...prev, secondName: e.target.value }))} />
           </div>
         </div>
         <div className="mt-4 flex justify-end gap-2">

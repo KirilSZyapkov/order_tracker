@@ -36,8 +36,13 @@ export default function DriverPage() {
   async function onConfirmDelivery(shipment: ShipmentType | null) {
     if(!shipment) return;
 
-    // const confirmed = confirm("Please confirm delivery for " + shipment.clientName);
-    // if (!confirmed) return;
+    if(!receiver.firstName || !receiver.secondName) { 
+      alert("Please enter the recipient's first and second name.");
+      return;
+    };
+
+    const confirmed = confirm("Please confirm delivery for " + shipment.clientName);
+    if (!confirmed) return;
 
     const previousStatus = [...shipments];
     const id = shipment.id;
@@ -60,6 +65,7 @@ export default function DriverPage() {
       status: delayed ? "delayed" : "delivered",
       actualDeliveryDay,
       deliveryTime,
+      recipientName: `${receiver.firstName} ${receiver.secondName}`,
       updatedAt: new Date().toISOString(),
     };
 
@@ -71,6 +77,7 @@ export default function DriverPage() {
     );
 
     if (updatedShipment) {
+      setReceiver({ firstName: "", secondName: "" });
       removeShipment(id);
     } else {
       setShipments(previousStatus);
