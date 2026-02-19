@@ -22,35 +22,37 @@ export function useShipmentsSync(opts?: Options) {
   const query = useQuery<ShipmentType[] | null>({
 
     queryKey: isTruckMode
-    ?[opts?.truckId]
-    :[opts?.organizationName],
+      ? [opts?.truckId]
+      : [opts?.organizationName],
 
     enabled: isTruckMode ? Boolean(opts?.truckId) : Boolean(opts?.organizationName),
 
-    queryFn: async ():Promise<ShipmentType[] | null>=>{
+    queryFn: async (): Promise<ShipmentType[] | null> => {
       let url: string = "";
 
-      if(isTruckMode){
+      if (isTruckMode) {
         url = `/api/shipments/assigned/${opts?.truckId}?status=inTransit`;
       } else {
         url = `/api/shipments?organizationName=${opts?.organizationName}`;
       }
 
-      const listData = await apiFetch<ShipmentType[]>(url,{ method: "GET" });
+      const listData = await apiFetch<ShipmentType[]>(url, { method: "GET" });
 
       return listData;
     }
- })
+  })
   const { data, isError, refetch } = query;
 
   useEffect(() => {
+    if (data === undefined) return;
     if (data) {
       setShipments(data);
+      setIsLoading(false);
     } else {
       setShipments([]);
+      setIsLoading(false);
     };
-    setIsLoading(false);
-  }, [data, setShipments]);  
+  }, [data, setShipments]);
 
   useEffect(() => {
     if (isError) {
