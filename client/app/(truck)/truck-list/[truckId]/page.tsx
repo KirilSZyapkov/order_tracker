@@ -13,6 +13,7 @@ import Loader from "@/components/shared/Loader";
 export default function DriverPage() {
   const [shipment, setShipment] = useState<ShipmentType | null>(null)
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [receiver, setReceiver] = useState({ firstName: "", secondName: "" });
 
   const setShipments = useAppStore((s) => s.setShipments);
   const params = useParams();
@@ -89,7 +90,7 @@ return (
       ))}
     </div>
     {/* Todo: за бъдещо доразвитие. Да се добави записване името на получателя в диалог прозореца onClick={() => setSelected(s)}*/}
-    <ConfirmDialog open={openModal} title="Confirm delivery!" onConfirm={() => onConfirmDelivery(shipment)} onCancel={() => setOpenModal(false)} />
+    <ConfirmDialog open={openModal} title="Confirm delivery!"setReceiver={setReceiver} onConfirm={() => onConfirmDelivery(shipment)} onCancel={() => setOpenModal(false)} />
   </main>
 );
 }
