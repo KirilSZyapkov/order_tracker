@@ -37,12 +37,14 @@ export default function DriverPage() {
     if(!shipment) return;
 
     if(!receiver.firstName || !receiver.secondName) { 
-      alert("Please enter the recipient's first and second name.");
+      alert("Please enter the recipient's First and Second name.");
       return;
     };
 
     const confirmed = confirm("Please confirm delivery for " + shipment.clientName);
     if (!confirmed) return;
+
+    setOpenModal(false);
 
     const previousStatus = [...shipments];
     const id = shipment.id;
