@@ -175,7 +175,7 @@ export default function OrdersList() {
             onValueChange={(value: string) => handleTruckAssign(shipment.id, value, shipment.organizationName, shipment)}
             disabled={status === "delivered" || status === "delayed"}
           >
-            <SelectTrigger className="w-[180px] cursor-pointer">
+            <SelectTrigger className="w-45 cursor-pointer">
               <SelectValue placeholder="Assign Truck"/>
             </SelectTrigger>
             <SelectContent>

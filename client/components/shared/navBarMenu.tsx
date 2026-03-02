@@ -32,7 +32,7 @@ export default function NavBarMenu() {
                 <UsersRound /> <span className="text-xl">Users</span>
               </Link></>}
           <SignedIn>
-            <Link href={`/user/`} className="cursor-pointer">My Account</Link>
+            <Link href={`/user/${curUser?.id}`} className="cursor-pointer">My Account</Link>
             <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
           </SignedIn>
 
