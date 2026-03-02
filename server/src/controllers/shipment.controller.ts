@@ -5,7 +5,7 @@ import { Status } from "@prisma/client";
 
 export async function getAllShipments(req: Request, res: Response) {
   const { organizationName } = req.query;
-  console.log("shipment.controller", organizationName)
+  
   try {
     const shipments = await db.shipment.findMany({
       where: { organizationName: String(organizationName) }
@@ -110,6 +110,29 @@ export async function updateShipmentById(req: Request, res: Response) {
     res.status(200).json(updatedShipment);
   } catch (e: unknown) {
     console.error("Error updating shipment:", e);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+export async function getUserShipments(req: Request, res: Response) {
+  const { userId, organizationName } = req.query;
+
+  if (!userId && !organizationName) {
+    return res.status(400).json({ message: "User ID or Organization Name is required" });
+  }
+
+  try {
+    const shipments = await db.shipment.findMany(
+      {
+        where: {
+          autherId: String(userId),
+          organizationName: String(organizationName)
+        }
+      }
+    );
+    res.status(200).json(shipments);
+  } catch (e: unknown) {
+    console.error("Error fetching user shipments:", e);
     res.status(500).json({ message: "Server error" });
   }
 }
