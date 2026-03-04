@@ -61,8 +61,7 @@ export default function OrdersList() {
   const trucks = useAppStore((state) => state.trucks);
   const {isLoading} = useShipmentsSync({organizationName: user?.organizationName || ""});
 
-  console.log("orderList", shipments);
-  console.log("orderList", isLoading);
+  
   useEffect(() => {
     async function fetch() {
       const trucksList = await apiFetch<TruckType[]>(`/api/trucks?organizationName=${user?.organizationName}`, {method: "GET"});
@@ -223,8 +222,7 @@ export default function OrdersList() {
               >
                 Copy Truck Number
               </DropdownMenuItem>
-              <DropdownMenuSeparator/>
-              <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
+              <DropdownMenuSeparator/>              
               {/* To do ... to add more actions(like "eddit") */}
             </DropdownMenuContent>
           </DropdownMenu>

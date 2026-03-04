@@ -15,8 +15,6 @@ export function isDelayed(plannedDay: string): boolean {
   planned.setHours(0, 0, 0, 0);
   // today.setHours(0, 0, 0, 0);
 
-  console.log("utils 18 - ", today);
-  console.log("utils 19 - ", planned);
   return today > planned;
 }
 

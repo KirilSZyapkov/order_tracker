@@ -30,7 +30,7 @@ export async function getUserById(req: Request, res: Response) {
   if(!userId){
     return res.status(400).json({ message: "User ID is required" });
   };
-  console.log("GET USER ID:", req.params.userId);
+  
   try {
     const user = await db.user.findFirst({
       where: { id: userId }

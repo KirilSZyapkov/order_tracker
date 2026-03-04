@@ -115,7 +115,10 @@ export async function updateShipmentById(req: Request, res: Response) {
 }
 
 export async function getUserShipments(req: Request, res: Response) {
-  const { userId, organizationName } = req.query;
+  const { userId, organizationName } = req.params;
+
+  console.log("server/shipmentControler, 120", userId);
+  console.log("server/shipmentControler, 121", organizationName);
 
   if (!userId && !organizationName) {
     return res.status(400).json({ message: "User ID or Organization Name is required" });
