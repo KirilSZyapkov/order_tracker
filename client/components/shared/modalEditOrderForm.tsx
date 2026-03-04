@@ -1,16 +1,15 @@
 "use client";
 
-import {useState} from "react";
-import {useAppStore} from "@/store/store";
-import {Input} from "@/components/ui/input";
-import {NewShipmentFormType} from "@/types/form_types/newShipmentFormType";
-import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
-import {toast} from "sonner";
-import {useShipmentsSync} from "@/hooks/useShipmentsSync";
-import {apiFetch} from "@/lib/utils";
-import {ShipmentType} from "@/types/shipmentType"
-import {formatDateForUI} from "@/lib/utils";
+import { useState } from "react";
+import { useAppStore } from "@/store/store";
+import { Input } from "@/components/ui/input";
+import { NewShipmentFormType } from "@/types/form_types/newShipmentFormType";
+import { Button } from "@/components/ui/button";
+import { Loader2, X } from "lucide-react";
+import { toast } from "sonner";
+import { apiFetch } from "@/lib/utils";
+import { ShipmentType } from "@/types/shipmentType"
+import { formatDateForUI } from "@/lib/utils";
 
 const initialData = {
   orderNumber: "",
@@ -19,9 +18,13 @@ const initialData = {
   deliveryDay: "",
   phone: "",
   gpsCoordinates: "",
+};
+
+type Props = {
+  setIsEditModalOpen: (prop: boolean) => void;
 }
 
-export default function AddShipmentForm() {
+export default function ModalEditOrderForm({setIsEditModalOpen}: Props) {
   const [formData, setFormData] = useState<NewShipmentFormType>(initialData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -77,11 +80,12 @@ export default function AddShipmentForm() {
   return (
     <form
       onSubmit={onSubmitNewShipment}
-      className="space-y-6 bg-white p-6 rounded-2xl shadow-md w-full max-w-5xl mx-auto"
+      className="top-1/2 left-1/2 transform -translate-x-1/2 space-y-6 bg-white p-6 rounded-2xl shadow-xl w-full max-w-5xl absolute z-50 border-3 border-gray-300"
     >
+      <X className="absolute right-3 top-3 cursor-pointer" onClick={() => setIsEditModalOpen(false)} />
       {/* Title */}
       <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
-        Create Shipment
+        Edit Order Number 123
       </h2>
 
       {/* Grid Layout */}
@@ -94,7 +98,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.orderNumber}
             onChange={(e) =>
-              setFormData((prev) => ({...prev, orderNumber: e.target.value}))
+              setFormData((prev) => ({ ...prev, orderNumber: e.target.value }))
             }
           />
         </div>
@@ -107,7 +111,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.clientName}
             onChange={(e) =>
-              setFormData((prev) => ({...prev, clientName: e.target.value}))
+              setFormData((prev) => ({ ...prev, clientName: e.target.value }))
             }
           />
         </div>
@@ -121,7 +125,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.deliveryDay}
             onChange={(e) =>
-              setFormData((prev) => ({...prev, deliveryDay: e.target.value}))
+              setFormData((prev) => ({ ...prev, deliveryDay: e.target.value }))
             }
           />
         </div>
@@ -135,7 +139,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.phone}
             onChange={(e) =>
-              setFormData((prev) => ({...prev, phone: e.target.value}))
+              setFormData((prev) => ({ ...prev, phone: e.target.value }))
             }
           />
         </div>
@@ -148,7 +152,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.deliveryAddress}
             onChange={(e) =>
-              setFormData((prev) => ({...prev, deliveryAddress: e.target.value}))
+              setFormData((prev) => ({ ...prev, deliveryAddress: e.target.value }))
             }
           />
         </div>
@@ -161,7 +165,7 @@ export default function AddShipmentForm() {
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
             value={formData.gpsCoordinates}
             onChange={(e) =>
-              setFormData((prev) => ({...prev, gpsCoordinates: e.target.value}))
+              setFormData((prev) => ({ ...prev, gpsCoordinates: e.target.value }))
             }
           />
         </div>
@@ -170,11 +174,11 @@ export default function AddShipmentForm() {
       {/* Submit button */}
       <Button
         type="submit"
-        className="w-full rounded-lg py-3 text-base font-semibold"
-        // disabled={createShipment.isPending}
+        className="w-full rounded-lg py-3 text-base font-semibold cursor-pointer"
+      // disabled={createShipment.isPending}
       >
         {false ? (
-          <Loader2 className="w-4 h-4 animate-spin"/>
+          <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           "Create Shipment"
         )}

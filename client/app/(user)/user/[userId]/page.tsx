@@ -38,14 +38,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
+import ModalEditOrderForm from "@/components/shared/modalEditOrderForm";
 
 
 export default function UserPage() {
@@ -57,6 +51,7 @@ export default function UserPage() {
   const curUser = useAppStore((state) => state.user);
   const isUserLoaded = useAppStore((state) => state.isUserLoaded);
   const [shipments, setShipments] = useState<ShipmentType[]>([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetch() {
@@ -150,6 +145,7 @@ export default function UserPage() {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
+        const shipment = row.original;
         const orderN = row.original
 
         return (
@@ -162,17 +158,24 @@ export default function UserPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => (navigator.clipboard.writeText(orderN.orderNumber), toast.success("Order number copied!")) }
+              <DropdownMenuItem className="cursor-pointer"
+                onClick={() => (navigator.clipboard.writeText(orderN.orderNumber), toast.success("Order number copied!"))}
               >
                 Copy Order N
               </DropdownMenuItem>
-              <DropdownMenuItem
+              <DropdownMenuItem className="cursor-pointer"
                 onClick={() => orderN.truckNumber ? (navigator.clipboard.writeText(orderN.truckNumber), toast.success("Truck number copied!")) : toast.error("Truck number is not assigned")}
               >
                 Copy Truck Number
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                Eddit
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
+
               <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
               {/* To do ... to add more actions(like "eddit") */}
             </DropdownMenuContent>
@@ -210,7 +213,7 @@ export default function UserPage() {
   };
 
   return (
-    <div className="w-full px-8 py-6">
+    <div className="w-full px-8 py-6 relative">
       <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">My Orders</h2>
       <div className="flex items-center py-4">
         <Input
@@ -289,6 +292,7 @@ export default function UserPage() {
           </TableBody>
         </Table>
       </div>
+      {isEditModalOpen && <ModalEditOrderForm setIsEditModalOpen={setIsEditModalOpen} />}
     </div>
   );
 }

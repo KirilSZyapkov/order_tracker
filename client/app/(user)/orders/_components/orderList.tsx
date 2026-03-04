@@ -212,12 +212,12 @@ export default function OrdersList() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
+              <DropdownMenuItem className="cursor-pointer"
                 onClick={() => navigator.clipboard.writeText(orderN.orderNumber)}
               >
                 Copy Order N
               </DropdownMenuItem>
-              <DropdownMenuItem
+              <DropdownMenuItem className="cursor-pointer"
                 onClick={() => orderN.truckNumber ? (navigator.clipboard.writeText(orderN.truckNumber), toast.success("Truck number copied!")) : toast.error("Truck number is not assigned")}
               >
                 Copy Truck Number
