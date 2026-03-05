@@ -10,6 +10,7 @@ import { apiFetch } from "@/lib/utils";
 import { ShipmentType } from "@/types/shipmentType"
 import { formatDateForUI } from "@/lib/utils";
 import { UserType } from "@/types/userType";
+import { Dispatch, SetStateAction } from 'react';
 
 function toDateInputValue(value: string): string {
   if (!value) return "";
@@ -35,16 +36,17 @@ type Props = {
   setIsEditModalOpen: (prop: boolean) => void;
   shipment: ShipmentType;
   user: UserType;
+  setShipments: Dispatch<SetStateAction<ShipmentType[]>>;
 }
 
-export default function ModalEditOrderForm({setIsEditModalOpen, shipment, user}: Props) {
+export default function ModalEditOrderForm({ setIsEditModalOpen, shipment, user, setShipments }: Props) {
   const [formData, setFormData] = useState<ShipmentType>(() => ({
     ...shipment,
     deliveryDay: toDateInputValue(shipment.deliveryDay),
   }));
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const updateShipment = useAppStore((state) => state.updateShipment);
-  
+
   async function onSubmitNewShipment(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
@@ -81,6 +83,7 @@ export default function ModalEditOrderForm({setIsEditModalOpen, shipment, user}:
 
     if (updateOrder) {
       updateShipment(shipment.id, updateOrder);
+      setShipments(prev => prev.map(s => s.id === shipment.id ? updateOrder : s));
       setFormData({ ...updateOrder, deliveryDay: toDateInputValue(updateOrder.deliveryDay) });
       setIsLoading(false);
     } else {
@@ -190,7 +193,7 @@ export default function ModalEditOrderForm({setIsEditModalOpen, shipment, user}:
         className="w-full rounded-lg py-3 text-base font-semibold cursor-pointer"
       // disabled={createShipment.isPending}
       >
-        {false ? (
+        {isLoading ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           "Update Shipment"

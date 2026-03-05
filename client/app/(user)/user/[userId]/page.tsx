@@ -169,12 +169,12 @@ export default function UserPage() {
               >
                 Copy Truck Number
               </DropdownMenuItem>
-              <DropdownMenuItem
+              {shipment.status === "inTransit" && <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => (setIsEditModalOpen(true), setSelectedShipment(shipment))}
               >
                 Eddit
-              </DropdownMenuItem>
+              </DropdownMenuItem>}
               <DropdownMenuSeparator />
 
               <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
@@ -296,6 +296,7 @@ export default function UserPage() {
       {isEditModalOpen && selectedShipment && curUser && (
         <ModalEditOrderForm
           setIsEditModalOpen={setIsEditModalOpen}
+          setShipments={setShipments}
           shipment={selectedShipment}
           user={curUser}
         />
