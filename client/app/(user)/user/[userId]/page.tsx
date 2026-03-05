@@ -52,6 +52,7 @@ export default function UserPage() {
   const isUserLoaded = useAppStore((state) => state.isUserLoaded);
   const [shipments, setShipments] = useState<ShipmentType[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedShipment, setSelectedShipment] = useState<ShipmentType | null>(null);
 
   useEffect(() => {
     async function fetch() {
@@ -170,7 +171,7 @@ export default function UserPage() {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => setIsEditModalOpen(true)}
+                onClick={() => (setIsEditModalOpen(true), setSelectedShipment(shipment))}
               >
                 Eddit
               </DropdownMenuItem>
@@ -292,7 +293,13 @@ export default function UserPage() {
           </TableBody>
         </Table>
       </div>
-      {isEditModalOpen && <ModalEditOrderForm setIsEditModalOpen={setIsEditModalOpen} />}
+      {isEditModalOpen && selectedShipment && curUser && (
+        <ModalEditOrderForm
+          setIsEditModalOpen={setIsEditModalOpen}
+          shipment={selectedShipment}
+          user={curUser}
+        />
+      )}
     </div>
   );
 }

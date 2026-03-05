@@ -18,11 +18,11 @@ export default function DriverPage() {
   const setShipments = useAppStore((s) => s.setShipments);
   const params = useParams();
   useShipmentsSync(params);
-  console.log("truck/truckId 17 - ", params);
+  
 
   const shipments = useAppStore((s) => s.shipments);
   const removeShipment = useAppStore((s) => s.removeShipment);
-  console.log("truck/truckId 22 - ", shipments);
+  
 
 
   if (shipments.length === 0) {
@@ -49,7 +49,7 @@ export default function DriverPage() {
     const previousStatus = [...shipments];
     const id = shipment.id;
     const locale = navigator.language;
-    console.log("truck/truckId 32 - ", id);
+  
     const actualDeliveryDay = new Intl.DateTimeFormat(locale, {
       year: "numeric",
       month: "short",

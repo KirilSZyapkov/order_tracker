@@ -3,42 +3,55 @@
 import { useState } from "react";
 import { useAppStore } from "@/store/store";
 import { Input } from "@/components/ui/input";
-import { NewShipmentFormType } from "@/types/form_types/newShipmentFormType";
 import { Button } from "@/components/ui/button";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/utils";
 import { ShipmentType } from "@/types/shipmentType"
 import { formatDateForUI } from "@/lib/utils";
+import { UserType } from "@/types/userType";
 
-const initialData = {
-  orderNumber: "",
-  clientName: "",
-  deliveryAddress: "",
-  deliveryDay: "",
-  phone: "",
-  gpsCoordinates: "",
-};
+function toDateInputValue(value: string): string {
+  if (!value) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+
+  const dotMatch = value.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (dotMatch) {
+    const [, day, month, year] = dotMatch;
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "";
+
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, "0");
+  const day = String(parsed.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 
 type Props = {
   setIsEditModalOpen: (prop: boolean) => void;
+  shipment: ShipmentType;
+  user: UserType;
 }
 
-export default function ModalEditOrderForm({setIsEditModalOpen}: Props) {
-  const [formData, setFormData] = useState<NewShipmentFormType>(initialData);
+export default function ModalEditOrderForm({setIsEditModalOpen, shipment, user}: Props) {
+  const [formData, setFormData] = useState<ShipmentType>(() => ({
+    ...shipment,
+    deliveryDay: toDateInputValue(shipment.deliveryDay),
+  }));
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const addShipments = useAppStore((state) => state.addShipment);
-  const user = useAppStore((state) => state.user);
-
+  const updateShipment = useAppStore((state) => state.updateShipment);
+  
   async function onSubmitNewShipment(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
     if (!formData.clientName || !formData.deliveryAddress || !formData.orderNumber || !formData.deliveryDay || !formData.phone || !user) {
       toast.error("Please fill out all fields.");
       return;
-    }
-    ;
+    };
 
     const newRawData = {
       orderNumber: formData.orderNumber.trim(),
@@ -49,26 +62,26 @@ export default function ModalEditOrderForm({setIsEditModalOpen}: Props) {
       gpsCoordinates: formData.gpsCoordinates,
       autherId: user.id,
       organizationName: user.organizationName,
-      truckId: "",
-      truckNumber: "",
-      actualDeliveryDay: "",
-      deliveryTime: "",
-      recipientName: "",
-      status: "pending",
+      truckId: formData.truckId,
+      truckNumber: formData.truckNumber,
+      actualDeliveryDay: formData.actualDeliveryDay,
+      deliveryTime: formData.deliveryTime,
+      recipientName: formData.recipientName,
+      status: formData.status,
     };
 
-    const newOrder = await apiFetch<ShipmentType>('/api/shipments',
+    const updateOrder = await apiFetch<ShipmentType>(`/api/shipments/${shipment?.id}`,
       {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify(newRawData)
       },
 
       "Failed to create the shipment"
     );
 
-    if (newOrder) {
-      addShipments(newOrder);
-      setFormData(initialData);
+    if (updateOrder) {
+      updateShipment(shipment.id, updateOrder);
+      setFormData({ ...updateOrder, deliveryDay: toDateInputValue(updateOrder.deliveryDay) });
       setIsLoading(false);
     } else {
       setIsLoading(false);
@@ -85,7 +98,7 @@ export default function ModalEditOrderForm({setIsEditModalOpen}: Props) {
       <X className="absolute right-3 top-3 cursor-pointer" onClick={() => setIsEditModalOpen(false)} />
       {/* Title */}
       <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
-        Edit Order Number 123
+        Edit Order {shipment.orderNumber}
       </h2>
 
       {/* Grid Layout */}
@@ -123,7 +136,7 @@ export default function ModalEditOrderForm({setIsEditModalOpen}: Props) {
             type="date"
             placeholder="Enter delivery day in format: 01.01"
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
-            value={formData.deliveryDay}
+            value={formData.deliveryDay ?? ""}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, deliveryDay: e.target.value }))
             }
@@ -180,7 +193,7 @@ export default function ModalEditOrderForm({setIsEditModalOpen}: Props) {
         {false ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
-          "Create Shipment"
+          "Update Shipment"
         )}
       </Button>
     </form>

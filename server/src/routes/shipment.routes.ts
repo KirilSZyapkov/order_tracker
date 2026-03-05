@@ -15,7 +15,7 @@ router.get("/assigned/:truckId", getAssignedShipmentByTruckId);
 router.get("/:shipmentId", getShipmentById);
 router.get("/list/:userId/:organizationName", getUserShipments);
 router.post("/", createShipment);
-router.patch("/:shipmentId", updateShipmentById);
+router.put("/:shipmentId", updateShipmentById);
 // router.delete("/:shipmentId", updateShipment);
 
 export default router;
