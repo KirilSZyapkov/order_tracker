@@ -110,6 +110,11 @@ export default function OrdersList() {
           <ArrowUpDown/>
         </Button>
       ),
+      sortingFn: (rowA, rowB) => {
+        const a = Number(rowA.getValue("orderNumber"));
+        const b = Number(rowB.getValue("orderNumber"));
+        return a - b;
+      },
       cell: ({row}) => <div>{row.getValue("orderNumber")}</div>,
     },
 
@@ -221,8 +226,7 @@ export default function OrdersList() {
                 onClick={() => orderN.truckNumber ? (navigator.clipboard.writeText(orderN.truckNumber), toast.success("Truck number copied!")) : toast.error("Truck number is not assigned")}
               >
                 Copy Truck Number
-              </DropdownMenuItem>
-              <DropdownMenuSeparator/>              
+              </DropdownMenuItem>     
               {/* To do ... to add more actions(like "eddit") */}
             </DropdownMenuContent>
           </DropdownMenu>

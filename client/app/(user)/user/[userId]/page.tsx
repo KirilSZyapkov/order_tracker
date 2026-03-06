@@ -77,6 +77,11 @@ export default function UserPage() {
           <ArrowUpDown />
         </Button>
       ),
+      sortingFn: (rowA, rowB) => {
+        const a = Number(rowA.getValue("orderNumber"));
+        const b = Number(rowB.getValue("orderNumber"));
+        return a - b;
+      },
       cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
     },
 
@@ -177,7 +182,12 @@ export default function UserPage() {
               </DropdownMenuItem>}
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem variant="destructive" className="cursor-pointer">Delete</DropdownMenuItem>
+              {shipment.status === "inTransit" && <DropdownMenuItem
+                variant="destructive"
+                className="cursor-pointer"
+              >
+                Delete
+              </DropdownMenuItem>}
               {/* To do ... to add more actions(like "eddit") */}
             </DropdownMenuContent>
           </DropdownMenu>
