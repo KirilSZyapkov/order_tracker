@@ -179,7 +179,7 @@ export default function ModalEditOrderForm({ setIsEditModalOpen, shipment, user,
           <Input
             placeholder="Enter GPS coordinates"
             className="rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500"
-            value={formData.gpsCoordinates}
+            value={formData.gpsCoordinates || ""}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, gpsCoordinates: e.target.value }))
             }
