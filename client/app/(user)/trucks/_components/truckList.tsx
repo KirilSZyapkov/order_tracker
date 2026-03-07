@@ -27,7 +27,6 @@ export default function TruckList() {
     };
     fetch();
   }, [user]);
-  // Todo... да проверя за логнат юзър, ако няма да редиректна към логин форма!
 
   // Todo: да доразвия картичката. Да се изписва име на превозвача и контакти
 
@@ -35,6 +34,7 @@ export default function TruckList() {
     <>
       {trucks.length > 0
         ? <div className="grid grid-cols-1 gap-6">
+          <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">All Trucks</h2>
           {trucks.map(t => (
             <Card key={t.id}>
               <CardContent className="flex justify-between items-center px-10">
