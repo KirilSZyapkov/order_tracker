@@ -64,6 +64,20 @@ export default function UserPage() {
     fetch();
   }, [curUser]);
 
+  async function handleDeleteShipment(shipmentId: string, userId: string, organizationName: string) {
+    if (!userId) {
+      return toast.error("Unauthorized action");
+    };
+    const response = await apiFetch(`/api/shipments/${shipmentId}/${userId}/${organizationName}`,
+      {
+        method: "DELETE",
+      },
+      "An error occurred while deleting the shipment"
+    );
+    setShipments((prev)=> prev.filter((s)=> s.id !== shipmentId));
+    toast.success("Shipment deleted successfully");
+  };
+
   const columns: ColumnDef<ShipmentType>[] = [
     {
       accessorKey: "orderNumber",
@@ -185,6 +199,7 @@ export default function UserPage() {
               {shipment.status === "inTransit" && <DropdownMenuItem
                 variant="destructive"
                 className="cursor-pointer"
+                onClick={() => handleDeleteShipment(shipment.id, shipment.autherId, shipment.organizationName)}
               >
                 Delete
               </DropdownMenuItem>}
